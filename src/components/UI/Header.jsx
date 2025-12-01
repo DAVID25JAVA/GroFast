@@ -8,7 +8,9 @@ import { MenuIcon, ShoppingCart } from "lucide-react";
 
 function Header() {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-8 md:px-8 py-5">
+    <div className=" backdrop-blur-2xl shadow-lg">
+
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-5">
       <div className="flex justify-between items-center">
         {/* Logo */}
         <div>
@@ -56,6 +58,7 @@ function Header() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
