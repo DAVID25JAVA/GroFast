@@ -1,9 +1,10 @@
 import React from "react";
+import { Button } from "./button";
 
 function NewsLetter() {
   return (
-    <div>
-      <div className="flex flex-col items-center justify-center text-center space-y-2">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
+      <div className="flex my-20 flex-col items-center justify-center text-center space-y-2">
         <h1 className="md:text-4xl text-2xl font-semibold">
           Never Miss a Deal!
         </h1>
@@ -11,19 +12,14 @@ function NewsLetter() {
           Subscribe to get the latest offers, new arrivals, and exclusive
           discounts
         </p>
-        <form className="flex items-center justify-between max-w-2xl w-full md:h-13 h-12">
+        <form className="flex items-center relative justify-between max-w-2xl w-full  ">
           <input
-            className="border border-gray-300 rounded-md h-full border-r-0 outline-none w-full rounded-r-none px-3 text-gray-500"
+            className="border border-green-300 h-10 rounded-md   outline-none w-full   px-3 text-gray-500"
             type="text"
             placeholder="Enter your email id"
             required
           />
-          <button
-            type="submit"
-            className="md:px-12 px-8 h-full text-white bg-indigo-500 hover:bg-indigo-600 transition-all cursor-pointer rounded-md rounded-l-none"
-          >
-            Subscribe
-          </button>
+           <Button variant={'primary'} size={'lg'} className={'cursor-pointer absolute right-0'}>Subscribe</Button>
         </form>
       </div>
     </div>
