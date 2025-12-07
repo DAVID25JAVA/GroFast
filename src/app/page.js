@@ -12,6 +12,7 @@ function Home() {
       <BestSellers />
       <Testimonial />
       <NewsLetter />
+      
     </div>
   )
 }

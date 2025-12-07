@@ -1,12 +1,30 @@
+'use client'
 import React from "react";
 import { assets } from "../../../public/assets";
 import { Button } from "./button";
 import { MoveRight } from "lucide-react";
 import Link from "next/link";
+import { useUser } from "@/context/userContext";
+import Login from "./Login";
 
 function HeroSection() {
+  const  {isForm, setIsForm} = useUser();
+ 
+  console.log(isForm, setIsForm);
+  
+  
+
   return (
+    <div className="">
+
     <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-12">
+
+      <div  >
+        {isForm && (
+        <Login />
+      )}
+       </div>
+
       {/* Hero for large screens */}
       <div
         className="hidden md:block bg-cover   mt-14 min-h-full w-full rounded-xl"
@@ -64,6 +82,7 @@ function HeroSection() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
