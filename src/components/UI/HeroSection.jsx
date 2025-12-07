@@ -6,7 +6,7 @@ import Link from "next/link";
 
 function HeroSection() {
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-12">
       {/* Hero for large screens */}
       <div
         className="hidden md:block bg-cover   mt-14 min-h-full w-full rounded-xl"

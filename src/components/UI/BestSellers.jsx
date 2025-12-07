@@ -2,6 +2,7 @@
 import { ShoppingCart, StarHalfIcon, StarIcon } from "lucide-react";
 import { dummyProducts } from "../../../public/assets";
 import { useState } from "react";
+import Link from "next/link";
 
 function BestSellers() {
   const [count, setCount] = useState(0);
@@ -22,12 +23,14 @@ function BestSellers() {
             >
               <div className="group cursor-pointer flex items-center  justify-center px-2 ">
                 {/* {product?.image?.map((img, index) => ( */}
+                <Link href={`/products/details/${product?._id}`}>
                   <img
                      
                     className="group-hover:scale-105 transition max-w-26 md:max-w-28"
                     src={product?.image[0]?.src}
                     alt={product.name}
                   />
+                </Link>
                 {/* ))} */}
               </div>
               <div className="text-gray-500/60 text-sm">
