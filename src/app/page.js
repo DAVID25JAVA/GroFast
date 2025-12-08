@@ -7,6 +7,7 @@ import Testimonial from "@/components/UI/Testimonial"
 function Home() {
   return (
     <div>
+       
       <HeroSection />
       <Category />
       <BestSellers />

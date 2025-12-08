@@ -11,7 +11,7 @@ function Header() {
   const { isForm, setIsForm } = useUser();
 
   return (
-    <div className=" backdrop-blur-2xl shadow-md fixed top-0 mx-auto w-full">
+    <div className=" backdrop-blur-2xl z-40 shadow-md fixed top-0 mx-auto w-full">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-5">
         <div className="flex justify-between items-center">
           {/* Logo */}
