@@ -17,14 +17,15 @@ function Category() {
                 className={`bg-indigo-200  md:h-48 h-44 flex flex-col-reverse items-center rounded-lg`}
                 style={{ backgroundColor: item?.bgColor }}
               >
-                <p className="text-gray-700 font-semibold text-sm p-3">{item?.text}</p>
-                <Link  href={`/products/category/${item?.path}`}>
-                <Image 
-                  
-                  alt="product img"
-                  src={item?.image}
-                  className={`bg-[${item?.bgColor}] md:w-36  cursor-pointer p-2 transition-transform duration-300 hover:scale-110`}
-                />
+                <p className="text-gray-700 font-semibold text-sm p-3">
+                  {item?.text}
+                </p>
+                <Link href={`/products/category/${item?.path?.toLowerCase()}`}>
+                  <Image
+                    alt="product img"
+                    src={item?.image}
+                    className={`bg-[${item?.bgColor}] md:w-36  cursor-pointer p-2 transition-transform duration-300 hover:scale-110`}
+                  />
                 </Link>
               </div>
             </div>

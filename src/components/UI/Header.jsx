@@ -40,7 +40,9 @@ function Header() {
             <div></div>
             <div className="relative cursor-pointer pt-2">
               {/* cart icons */}
+              <Link href={'/cart'}>
               <ShoppingCart className="" />
+              </Link>
               <div className="absolute w-4 h-4 bg-green-500 rounded-full text-center top-1 text-white -right-2 text-xs">
                 0
               </div>
