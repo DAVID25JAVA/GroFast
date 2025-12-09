@@ -1,176 +1,137 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 import { dummyOrders } from "../../../public/assets";
 import Image from "next/image";
-import {
-  Package,
-  MapPin,
-  Calendar,
-  CreditCard,
-  CheckCircle,
-  Clock,
-  ShoppingBag,
-} from "lucide-react";
+import { ChevronRight, Package, Clock, CheckCircle } from 'lucide-react';
 
 function Page() {
-  const [expandedOrder, setExpandedOrder] = useState(null);
-
   return (
-    <div className="  bg-leaner-to-br from-green-50 via-white to-emerald-50">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-28 pb-20">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <ShoppingBag className="w-8 h-8 text-green-600" />
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-700">
-              My Orders
-            </h1>
-          </div>
-          <p className="text-gray-600">
-            Track your grocery deliveries and order history
-          </p>
+        
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">My Orders</h1>
         </div>
 
-        <div className="space-y-6">
+        {/* Orders List */}
+        <div className="space-y-3">
           {dummyOrders.map((order, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl   transition-all duration-300 overflow-hidden border border-gray-200"
+              className="bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-md transition-shadow"
             >
-              {/* Order Content */}
-              <div className="p-6">
-                <div className="grid lg:grid-cols-[2fr_1.2fr_0.9fr_1fr] gap-6 items-start">
-                  {/* Product List */}
+              
+              {/* Order Header */}
+              <div className="px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-2 h-2 rounded-full ${order.isPaid ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
                   <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <Package className="w-5 h-5 text-green-600" />
-                      <h3 className="font-semibold text-gray-800 text-lg">
-                        Items
-                      </h3>
-                    </div>
-                    <div className="space-y-2">
-                      {order.items.map((item, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
-                        >
-                          <Image
-                            className="w-16 h-16 rounded-lg object-cover border p-1"
-                            src={item?.product?.image[0]}
-                            alt={item?.product?.name}
-                            width={48}
-                            height={48}
-                          />
-                          <div className="flex-1">
-                            <p className="font-medium text-gray-800">
-                              {item.product.name}
-                            </p>
-                            {/* {item.quantity > 1 && ( */}
-                            <span className="text-sm text-green-600 font-semibold">
-                              Qty: {item.quantity}
-                            </span>
-                            {/* )} */}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <p className="text-xs text-gray-500">Order Date</p>
+                    <p className="text-sm font-medium text-gray-900">{order.orderDate}</p>
                   </div>
-
-                  {/* Shipping Address */}
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <MapPin className="w-5 h-5 text-rose-600" />
-                      <h3 className="font-semibold text-gray-800 text-lg">
-                        Delivery Address
-                      </h3>
-                    </div>
-                    <div className="bg-linear-to-br from-gray-50 to-gray-100 p-4 rounded-xl text-sm space-y-1">
-                      <p className="font-semibold text-gray-900">
-                        {order.address.firstName} {order.address.lastName}
-                      </p>
-                      <p className="text-gray-600 leading-relaxed">
-                        {order.address.street}, {order.address.city},{" "}
-                        {order.address.state}, {order.address.zipcode},{" "}
-                        {order.address.country}
-                      </p>
-                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <p className="text-xs text-gray-500">Total</p>
+                    <p className="text-base font-bold text-gray-900">${order.amount}</p>
                   </div>
+                  {order.isPaid ? (
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                  ) : (
+                    <Clock className="w-5 h-5 text-yellow-500" />
+                  )}
+                </div>
+              </div>
 
-                  {/* Amount */}
-                  <div>
-                    <h3 className="font-semibold text-gray-800 text-lg mb-3">
-                      Total Amount
-                    </h3>
-                    <div className="bg-green-600 text-white  w-20 h-10  rounded-md flex items-center justify-center text-center">
-                      <p className="text-base font-bold">${order.amount}</p>
-                    </div>
-                  </div>
-
-                  {/* Payment & Order Info */}
-                  <div>
-                    <h3 className="font-semibold text-gray-800 text-lg mb-4">
-                      Order Details
-                    </h3>
-                    <div className="space-y-3">
-                      {/* Payment Method */}
-                      <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                        <CreditCard className="w-5 h-5 text-blue-600  shrink-0" />
-                        <div>
-                          <p className="text-xs text-gray-500">
-                            Payment Method
-                          </p>
-                          <p className="font-semibold text-gray-800">
-                            {order.paymentType}
-                          </p>
-                        </div>
+              {/* Items Section */}
+              <div className="px-4 py-4">
+                <div className="flex items-start gap-3 mb-4">
+                  {/* Product Images */}
+                  <div className="flex -space-x-2">
+                    {order?.items?.slice(0, 3).map((img, idx) => (
+                      <div key={idx} className="relative">
+                        <Image
+                          className="w-12 h-12 rounded-lg object-cover border-2 border-white shadow-sm"
+                          src={img?.product?.image[0]}
+                          alt={img?.product?.name}
+                          width={48}
+                          height={48}
+                        />
                       </div>
-
-                      {/* Order Date */}
-                      <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                        <Calendar className="w-5 h-5 text-purple-600  shrink-0" />
-                        <div>
-                          <p className="text-xs text-gray-500">Order Date</p>
-                          <p className="font-semibold text-gray-800">
-                            {order.orderDate}
-                          </p>
-                        </div>
+                    ))}
+                    {order.items.length > 3 && (
+                      <div className="w-12 h-12 rounded-lg bg-gray-100 border-2 border-white shadow-sm flex items-center justify-center">
+                        <span className="text-xs font-semibold text-gray-600">+{order.items.length - 3}</span>
                       </div>
+                    )}
+                  </div>
 
-                      {/* Payment Status */}
-                      <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg">
-                        {order.isPaid ? (
-                          <>
-                            <CheckCircle className="w-5 h-5 text-green-600  shrink-0" />
-                            <div>
-                              <p className="text-xs text-gray-500">
-                                Payment Status
-                              </p>
-                              <p className="font-semibold text-green-600">
-                                Paid
-                              </p>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <Clock className="w-5 h-5 text-amber-600  shrink-0" />
-                            <div>
-                              <p className="text-xs text-gray-500">
-                                Payment Status
-                              </p>
-                              <p className="font-semibold text-amber-600">
-                                Pending
-                              </p>
-                            </div>
-                          </>
+                  {/* Items List */}
+                  <div className="flex-1">
+                    {order.items.slice(0, 2).map((item, idx) => (
+                      <p key={idx} className="text-sm text-gray-700 mb-1">
+                        {item.product.name}
+                        {item.quantity > 1 && (
+                          <span className="text-gray-500"> × {item.quantity}</span>
                         )}
-                      </div>
-                    </div>
+                      </p>
+                    ))}
+                    {order.items.length > 2 && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        +{order.items.length - 2} more items
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Delivery Address */}
+                <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                  <p className="text-xs text-gray-500 mb-1">Delivery Address</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {order.address.firstName} {order.address.lastName}
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    {order.address.street}, {order.address.city}, {order.address.state} {order.address.zipcode}
+                  </p>
+                </div>
+
+                {/* Payment Info */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500">Payment:</span>
+                    <span className="text-xs font-medium text-gray-700">{order.paymentType}</span>
+                  </div>
+                  <div className={`text-xs font-semibold px-3 py-1 rounded-full ${
+                    order.isPaid 
+                      ? 'bg-green-50 text-green-700' 
+                      : 'bg-yellow-50 text-yellow-700'
+                  }`}>
+                    {order.isPaid ? 'Paid' : 'Pending'}
                   </div>
                 </div>
               </div>
+
+              {/* Footer Action */}
+              <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                <button className="w-full flex items-center justify-between text-sm font-medium text-purple-600 hover:text-purple-700">
+                  <span>View Details</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+
             </div>
           ))}
         </div>
+
+        {/* Empty State (if no orders) */}
+        {dummyOrders.length === 0 && (
+          <div className="bg-white rounded-lg p-12 text-center">
+            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
+            <p className="text-sm text-gray-500">Your orders will appear here once you make a purchase</p>
+          </div>
+        )}
+
       </div>
     </div>
   );
