@@ -1,16 +1,15 @@
 import React from "react";
 import { dummyOrders } from "../../../public/assets";
 import Image from "next/image";
-import { ChevronRight, Package, Clock, CheckCircle } from 'lucide-react';
+import { ChevronRight, Package, Clock, CheckCircle } from "lucide-react";
 
 function Page() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-28 pb-20">
-        
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">My Orders</h1>
+          <h1 className="text-2xl font-bold text-gray-700">My Orders</h1>
         </div>
 
         {/* Orders List */}
@@ -20,20 +19,27 @@ function Page() {
               key={index}
               className="bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-md transition-shadow"
             >
-              
               {/* Order Header */}
               <div className="px-4 py-3 bg-white border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${order.isPaid ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      order.isPaid ? "bg-green-500" : "bg-yellow-500"
+                    }`}
+                  ></div>
                   <div>
                     <p className="text-xs text-gray-500">Order Date</p>
-                    <p className="text-sm font-medium text-gray-900">{order.orderDate}</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {order.orderDate}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-right">
                     <p className="text-xs text-gray-500">Total</p>
-                    <p className="text-base font-bold text-gray-900">${order.amount}</p>
+                    <p className="text-base font-bold text-gray-900">
+                      ${order.amount}
+                    </p>
                   </div>
                   {order.isPaid ? (
                     <CheckCircle className="w-5 h-5 text-green-500" />
@@ -61,7 +67,9 @@ function Page() {
                     ))}
                     {order.items.length > 3 && (
                       <div className="w-12 h-12 rounded-lg bg-gray-100 border-2 border-white shadow-sm flex items-center justify-center">
-                        <span className="text-xs font-semibold text-gray-600">+{order.items.length - 3}</span>
+                        <span className="text-xs font-semibold text-gray-600">
+                          +{order.items.length - 3}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -72,7 +80,10 @@ function Page() {
                       <p key={idx} className="text-sm text-gray-700 mb-1">
                         {item.product.name}
                         {item.quantity > 1 && (
-                          <span className="text-gray-500"> × {item.quantity}</span>
+                          <span className="text-gray-500">
+                            {" "}
+                            × {item.quantity}
+                          </span>
                         )}
                       </p>
                     ))}
@@ -91,7 +102,8 @@ function Page() {
                     {order.address.firstName} {order.address.lastName}
                   </p>
                   <p className="text-xs text-gray-600 mt-1">
-                    {order.address.street}, {order.address.city}, {order.address.state} {order.address.zipcode}
+                    {order.address.street}, {order.address.city},{" "}
+                    {order.address.state} {order.address.zipcode}
                   </p>
                 </div>
 
@@ -99,14 +111,18 @@ function Page() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500">Payment:</span>
-                    <span className="text-xs font-medium text-gray-700">{order.paymentType}</span>
+                    <span className="text-xs font-medium text-gray-700">
+                      {order.paymentType}
+                    </span>
                   </div>
-                  <div className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                    order.isPaid 
-                      ? 'bg-green-50 text-green-700' 
-                      : 'bg-yellow-50 text-yellow-700'
-                  }`}>
-                    {order.isPaid ? 'Paid' : 'Pending'}
+                  <div
+                    className={`text-xs font-semibold px-3 py-1 rounded-full ${
+                      order.isPaid
+                        ? "bg-green-50 text-green-700"
+                        : "bg-yellow-50 text-yellow-700"
+                    }`}
+                  >
+                    {order.isPaid ? "Paid" : "Pending"}
                   </div>
                 </div>
               </div>
@@ -118,7 +134,6 @@ function Page() {
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
-
             </div>
           ))}
         </div>
@@ -127,11 +142,14 @@ function Page() {
         {dummyOrders.length === 0 && (
           <div className="bg-white rounded-lg p-12 text-center">
             <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
-            <p className="text-sm text-gray-500">Your orders will appear here once you make a purchase</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              No orders yet
+            </h3>
+            <p className="text-sm text-gray-500">
+              Your orders will appear here once you make a purchase
+            </p>
           </div>
         )}
-
       </div>
     </div>
   );

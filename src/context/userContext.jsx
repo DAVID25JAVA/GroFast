@@ -5,14 +5,25 @@ const UserContext = createContext();
 
 export function UserProvider({ children }) {
   const [isUser, setIsUser] = useState(true);
+  const [isSeller, setIsSeller] = useState(false);
   const [isForm, setIsForm] = useState(false);
 
   const handleUser = () => {
-   setIsUser(true)
- }
+    setIsUser(true);
+  };
 
   return (
-    <UserContext.Provider value={{ isForm, isUser, setIsForm, setIsUser, handleUser }}>
+    <UserContext.Provider
+      value={{
+        isForm,
+        isUser,
+        setIsForm,
+        setIsUser,
+        handleUser,
+        isSeller,
+        setIsSeller,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

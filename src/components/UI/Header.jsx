@@ -8,7 +8,7 @@ import { CircleUser, MenuIcon, ShoppingCart, User } from "lucide-react";
 import { useUser } from "@/context/userContext";
 
 function Header() {
-  const { isForm, setIsForm, handleUser, isUser } = useUser();
+  const { isForm, setIsForm, isUser, isSeller } = useUser();
 
   return (
     <div className=" backdrop-blur-2xl z-40 shadow-md fixed top-0 mx-auto w-full">
@@ -22,7 +22,8 @@ function Header() {
           </div>
 
           {/* Menu items */}
-          <div className="sm:flex gap-5 hidden">
+          <div className="sm:flex gap-5 hidden items-center">
+            {isUser && <Link href={"/seller"} className="hover:bg-gray-50 text-sm border px-3 sm:block font-normal rounded-full mt-2">Seller Dashboard</Link>}
             {menuItems?.map((items) => (
               <div key={items?.id} className="pt-2">
                 <Link
@@ -63,9 +64,7 @@ function Header() {
                   >
                     <ul className=" space-y-2 space-x-5  ">
                       <li className="cursor-pointer hover:text-green-600">
-                      <Link  href={'/my-order'}>
-                        My Order
-                      </Link>
+                        <Link href={"/my-order"}>My Order</Link>
                       </li>
                       <li className="cursor-pointer hover:text-red-600 ">
                         Sign Out
