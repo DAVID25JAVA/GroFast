@@ -16,7 +16,7 @@ function Header() {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div>
-            <Link href={"/"}>
+            <Link href={"/main"}>
               <Image alt="logo" src={assets?.logo} className="" />
             </Link>
           </div>

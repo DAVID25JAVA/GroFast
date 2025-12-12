@@ -1,21 +1,23 @@
-'use client'
-import Navbar from "@/components/seller/Navbar";
-import SideBar from "@/components/seller/SideBar";
+"use client";
 import React from "react";
 import { useUser } from "@/context/userContext";
-import { usePathname } from "next/navigation";
-import { redirect } from "next/navigation";
+import SellerNavbar from "@/components/seller/Navbar";
+import SellerSidebar from "@/components/seller/SideBar";
 
 function layout({ children }) {
-  
-    
+  const { isSeller } = useUser();
 
   return (
-    <div className="flex min-h-screen">
-      <SideBar />
-      <div className="flex-1">
-        <Navbar />
-        <main className="p-6  ">{children}</main>
+    <div className="flex flex-col h-screen bg-gray-50">
+      {isSeller&& <SellerNavbar />
+}
+      
+      {/* Sidebar + Main Content */}
+      <div className="flex flex-1 overflow-hidden">
+        {isSeller&& <SellerSidebar />}
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>
   );

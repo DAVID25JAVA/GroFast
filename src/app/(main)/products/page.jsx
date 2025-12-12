@@ -1,5 +1,5 @@
 import React from "react";
-import { dummyProducts } from "../../../public/assets";
+import { dummyProducts } from "../../../../public/assets";
 import ProductCard from "@/components/UI/Card";
 
 function page() {

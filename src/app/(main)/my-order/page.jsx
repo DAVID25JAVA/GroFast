@@ -1,5 +1,5 @@
 import React from "react";
-import { dummyOrders } from "../../../public/assets";
+import { dummyOrders } from "../../../../public/assets";
 import Image from "next/image";
 import { ChevronRight, Package, Clock, CheckCircle } from "lucide-react";
 
