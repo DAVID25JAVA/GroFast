@@ -5,15 +5,13 @@ import Footer from "@/components/UI/Footer";
 
 function layout({ children }) {
   return (
-    // <html lang="en">
-    <body>
+     
       <UserProvider>
         <Header />
         <main> {children}</main>
         <Footer />
       </UserProvider>
-    </body>
-    // </html>
+    
   );
 }
 
