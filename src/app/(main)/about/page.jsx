@@ -1,4 +1,5 @@
 import React from "react";
+import { assets } from "../../../../public/assets";
 
 function page() {
   return (
@@ -14,8 +15,8 @@ function page() {
         <div className="size-[520px] rounded-full absolute blur-[300px] -z-10 bg-[#FBFFE1]"></div>
         <img
           className="max-w-sm w-full rounded-xl h-auto"
-          src="https://images.unsplash.com/photo-1555212697-194d092e3b8f?q=80&w=830&h=844&auto=format&fit=crop"
-          alt=""
+          src={assets?.about?.src}
+          alt="grocery image"
         />
         <div>
           <h1 className="text-xl  md:text-3xl font-semibold text-gray-700">Our Latest  <span className="text-primary">features</span></h1>

@@ -4,12 +4,20 @@ import { Button } from "./button";
 import Image from "next/image";
 import { assets, menuItems } from "../../../public/assets";
 import Link from "next/link";
-import { CircleUser, MenuIcon, ShoppingCart, User, X } from "lucide-react";
+import { CircleUser, MenuIcon, Search, ShoppingCart, User, X } from "lucide-react";
 import { useUser } from "@/context/userContext";
+import { useCart } from "@/context/cartContext";
 
 function Header() {
   const { isForm, setIsForm, isUser, isSeller } = useUser();
+  const { cart, updateQuantity } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const cartQunatity = Object.values(cart).reduce(
+    (items, qty) => items + qty,
+    0
+  );
+  
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
@@ -57,7 +65,7 @@ function Header() {
 
             <div className="flex gap-5 items-center">
               {/* Search bar */}
-              <div></div>
+              <div><Search className="cursor-pointer" /></div>
 
               {/* Cart icon */}
               <div className="relative cursor-pointer pt-2">
@@ -65,7 +73,7 @@ function Header() {
                   <ShoppingCart className="" />
                 </Link>
                 <div className="absolute w-4 h-4 bg-green-500 rounded-full text-center top-1 text-white -right-2 text-xs">
-                  0
+                  {cartQunatity || 0}
                 </div>
               </div>
 

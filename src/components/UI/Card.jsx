@@ -2,19 +2,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ShoppingCart, StarIcon } from "lucide-react";
+import { useCart } from "@/context/cartContext";
 
 function ProductCard({ productData }) {
   const [count, setCount] = useState(0);
+  const { addToCart, cart, updateQuantity } = useCart();
 
-  const {
-    _id,
-    name,
-    category,
-    image,
-    rating,
-    offerPrice,
-    price,
-  } = productData || {};
+  const { _id, name, category, image, rating, offerPrice, price } =
+    productData || {};
 
   return (
     <div className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white">
@@ -61,7 +56,9 @@ function ProductCard({ productData }) {
             {count === 0 ? (
               <button
                 className="flex items-center justify-center gap-1 bg-primary md:w-20 w-16 h-[34px] rounded text-white font-medium"
-                onClick={() => setCount(1)}
+                onClick={() => {
+                  addToCart(productData?._id), setCount(count + 1);
+                }}
               >
                 <ShoppingCart size={15} />
                 Add
@@ -69,14 +66,20 @@ function ProductCard({ productData }) {
             ) : (
               <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary rounded select-none">
                 <button
-                  onClick={() => setCount((prev) => Math.max(prev - 1, 0))}
+                  onClick={() => {
+                    updateQuantity(_id, cart[_id] - 1), setCount(count - 1);
+                  }}
                   className="cursor-pointer text-white text-md px-2 h-full"
                 >
                   -
                 </button>
-                <span className="w-5 text-center text-white">{count}</span>
+                <span className="w-5 text-center text-white">
+                  {cart[_id] || 0}
+                </span>
                 <button
-                  onClick={() => setCount((prev) => prev + 1)}
+                  onClick={() => {
+                    addToCart(productData?._id), setCount(count + 1);
+                  }}
                   className="cursor-pointer text-white text-md px-2 h-full"
                 >
                   +
