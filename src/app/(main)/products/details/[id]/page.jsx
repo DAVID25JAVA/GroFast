@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 function page() {
-  const { cart, addToCart } = useCart();
+  const { addToCart } = useCart();
   const product = {
     name: "Nike Pegasus 41 shoes",
     category: "Sports",

@@ -4,6 +4,8 @@ import Header from "@/components/UI/Header";
 import Footer from "@/components/UI/Footer";
 import CartProvider from "@/context/cartContext";
 import { Toaster } from "react-hot-toast";
+import { SearchProvider } from "@/context/searchContext";
+import Search from "@/components/UI/Search";
 
 function layout({ children }) {
   return (
@@ -11,9 +13,12 @@ function layout({ children }) {
       <Toaster />
       <UserProvider>
         <CartProvider>
-          <Header />
-          <main> {children}</main>
-          <Footer />
+          <SearchProvider>
+            <Header />
+            <Search/>
+            <main>{children}</main>
+            <Footer />
+          </SearchProvider>
         </CartProvider>
       </UserProvider>
     </div>

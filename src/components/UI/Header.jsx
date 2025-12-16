@@ -4,20 +4,28 @@ import { Button } from "./button";
 import Image from "next/image";
 import { assets, menuItems } from "../../../public/assets";
 import Link from "next/link";
-import { CircleUser, MenuIcon, Search, ShoppingCart, User, X } from "lucide-react";
+import {
+  CircleUser,
+  MenuIcon,
+  Search,
+  ShoppingCart,
+  User,
+  X,
+} from "lucide-react";
 import { useUser } from "@/context/userContext";
 import { useCart } from "@/context/cartContext";
+import { useSearch } from "@/context/searchContext";
 
 function Header() {
-  const { isForm, setIsForm, isUser, isSeller } = useUser();
-  const { cart, updateQuantity } = useCart();
+  const { isForm, setIsForm, isUser, setIsSearch } = useUser();
+   const { setOpenSearch } = useSearch();
+  const { cart } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const cartQunatity = Object.values(cart).reduce(
     (items, qty) => items + qty,
     0
   );
-  
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
@@ -46,7 +54,7 @@ function Header() {
               {isUser && (
                 <Link
                   href={"/seller"}
-                  className="hover:bg-gray-50 text-gray-800 text-sm border px-3 font-normal rounded-full mt-2"
+                  className="hover:bg-gray-50 text-gray-800 text-sm border border-primary px-3 font-normal rounded-full mt-2"
                 >
                   Seller Dashboard
                 </Link>
@@ -65,7 +73,12 @@ function Header() {
 
             <div className="flex gap-5 items-center">
               {/* Search bar */}
-              <div><Search className="cursor-pointer" /></div>
+              <div>
+                <Search
+                  onClick={() => setOpenSearch(true)}
+                  className="cursor-pointer"
+                />
+              </div>
 
               {/* Cart icon */}
               <div className="relative cursor-pointer pt-2">

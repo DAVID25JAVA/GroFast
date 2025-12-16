@@ -7,6 +7,7 @@ export function UserProvider({ children }) {
   const [isUser, setIsUser] = useState(true);
   const [isSeller, setIsSeller] = useState(false);
   const [isForm, setIsForm] = useState(false);
+  const [isSearch, setIsSearch] = useState(true);
 
   const handleUser = () => {
     setIsUser(true);
@@ -22,6 +23,8 @@ export function UserProvider({ children }) {
         handleUser,
         isSeller,
         setIsSeller,
+        isSearch,
+        setIsSearch
       }}
     >
       {children}

@@ -7,7 +7,7 @@ import NewsLetter from "@/components/UI/NewsLetter";
 
 function page() {
   return (
-    <div>
+    <div> 
       <HeroSection />
       <Category />
       <BestSellers />
