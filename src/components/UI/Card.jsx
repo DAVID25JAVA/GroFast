@@ -55,7 +55,7 @@ function ProductCard({ productData }) {
           <div className="text-primary">
             {count === 0 ? (
               <button
-                className="flex items-center justify-center gap-1 bg-primary md:w-20 w-16 h-[34px] rounded text-white font-medium"
+                className="flex items-center cursor-pointer justify-center gap-1 bg-primary md:w-20 w-16 h-[34px] rounded text-white font-medium"
                 onClick={() => {
                   addToCart(productData?._id), setCount(count + 1);
                 }}

@@ -3,16 +3,20 @@ import { UserProvider } from "@/context/userContext";
 import Header from "@/components/UI/Header";
 import Footer from "@/components/UI/Footer";
 import CartProvider from "@/context/cartContext";
+import { Toaster } from "react-hot-toast";
 
 function layout({ children }) {
   return (
-    <UserProvider>
-      <CartProvider>
-        <Header />
-        <main> {children}</main>
-        <Footer />
-      </CartProvider>
-    </UserProvider>
+    <div>
+      <Toaster />
+      <UserProvider>
+        <CartProvider>
+          <Header />
+          <main> {children}</main>
+          <Footer />
+        </CartProvider>
+      </UserProvider>
+    </div>
   );
 }
 

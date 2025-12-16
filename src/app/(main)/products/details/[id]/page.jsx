@@ -1,6 +1,6 @@
 "use client";
 import { useCart } from "@/context/cartContext";
-import { StarIcon } from "lucide-react";
+import { MoveLeft, StarIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -30,6 +30,7 @@ function page() {
   return (
     product && (
       <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-28">
+        <Link href={'/products'} className="flex items-center gap-2 bg-primary w-44 h-6 text-sm text-white text-center rounded-full"> <MoveLeft size={18} className="text-sm ml-2 text-white text-center" /> Back To Products</Link>
         <div className="flex flex-col md:flex-row gap-16 mt-4">
           <div className="flex gap-3">
             <div className="flex flex-col gap-3">
