@@ -2,9 +2,12 @@
 import { MoveLeft, X } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
+ 
 
 function page() {
   const [showAddress, setShowAddress] = useState(false);
+ 
+  
 
   const products = [
     {
@@ -122,7 +125,9 @@ function page() {
         </div>
 
         <div className="max-w-[360px] w-full bg-gray-100/40 p-5 max-md:mt-16 border border-gray-300/70">
-          <h2 className="text-xl md:text-xl font-medium text-gray-700">Order Summary</h2>
+          <h2 className="text-xl md:text-xl font-medium text-gray-700">
+            Order Summary
+          </h2>
           <hr className="border-gray-300 my-5" />
 
           <div className="mb-6">
@@ -137,18 +142,14 @@ function page() {
               </button>
               {showAddress && (
                 <div className="absolute top-12 py-1 bg-white border border-gray-300 text-sm w-full">
-                  <p
-                    onClick={() => setShowAddress(false)}
-                    className="text-gray-500 p-2 hover:bg-gray-100"
-                  >
-                    New York, USA
-                  </p>
-                  <p
-                    onClick={() => setShowAddress(false)}
-                    className="text-indigo-500 text-center cursor-pointer p-2 hover:bg-indigo-500/10"
-                  >
-                    Add address
-                  </p>
+                  <Link href={"/address"}>
+                    <p
+                      onClick={() => setShowAddress(false)}
+                      className="text-white bg-primary text-center cursor-pointer p-2  "
+                    >
+                      Add address
+                    </p>
+                  </Link>
                 </div>
               )}
             </div>
@@ -156,7 +157,9 @@ function page() {
             <p className="text-sm font-medium uppercase mt-6">Payment Method</p>
 
             <select className="w-full border border-gray-300 bg-white px-3 py-2 mt-2 outline-none">
-              <option value="COD" className="">Cash On Delivery</option>
+              <option value="COD" className="">
+                Cash On Delivery
+              </option>
               <option value="Online">Online Payment</option>
             </select>
           </div>
