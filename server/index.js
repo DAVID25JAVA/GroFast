@@ -5,9 +5,15 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from "./src/routes/user.js";
 import sellerRouter from "./src/routes/seller.js";
+import { connectCloudinary } from "./src/config/cloudinary.js";
+import productRouter from "./src/routes/product.js";
+import cartRouter from "./src/routes/cart.js";
+import addressRouter from "./src/routes/userAddress.js";
+
+const server = express();
 
 await connectDB();
-const server = express();
+await connectCloudinary();
 
 // Allow multiple origin
 const allowOrigin = ["http://localhost:3000"];
@@ -15,17 +21,18 @@ const allowOrigin = ["http://localhost:3000"];
 // middilwares configration
 server.use(express.json());
 server.use(cookieParser());
-server.use(cors({ origin: allowOrigin,  credentials: true }));
+server.use(cors({ origin: allowOrigin, credentials: true }));
 
 // server.use((req, res) => {
 //   res.send("API is working fine.........");
 // });
 
 // user API
-server.use("/api/user", userRouter)
-server.use("/api/seller", sellerRouter)
-
-
+server.use("/api/user", userRouter);
+server.use("/api/seller", sellerRouter);
+server.use("/api/product", productRouter)
+server.use("/api/cart/update", cartRouter)
+server.use("/api/user/address/", addressRouter)
 
 const PORT = process?.env?.PORT || 5000;
 server.listen(PORT, () => {
