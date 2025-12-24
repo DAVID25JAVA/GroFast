@@ -4,6 +4,7 @@ import connectDB from "./src/db/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from "./src/routes/user.js";
+import sellerRouter from "./src/routes/seller.js";
 
 await connectDB();
 const server = express();
@@ -22,6 +23,7 @@ server.use(cors({ origin: allowOrigin,  credentials: true }));
 
 // user API
 server.use("/api/user", userRouter)
+server.use("/api/seller", sellerRouter)
 
 
 
