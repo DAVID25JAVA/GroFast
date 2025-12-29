@@ -9,6 +9,7 @@ import { connectCloudinary } from "./src/config/cloudinary.js";
 import productRouter from "./src/routes/product.js";
 import cartRouter from "./src/routes/cart.js";
 import addressRouter from "./src/routes/userAddress.js";
+import orderRouter from "./src/routes/order.js";
 
 const server = express();
 
@@ -30,9 +31,10 @@ server.use(cors({ origin: allowOrigin, credentials: true }));
 // user API
 server.use("/api/user", userRouter);
 server.use("/api/seller", sellerRouter);
-server.use("/api/product", productRouter)
-server.use("/api/cart/update", cartRouter)
-server.use("/api/user/address/", addressRouter)
+server.use("/api/product", productRouter);
+server.use("/api/cart/update", cartRouter);
+server.use("/api/user/address", addressRouter);
+server.use("/api/order", orderRouter);
 
 const PORT = process?.env?.PORT || 5000;
 server.listen(PORT, () => {
