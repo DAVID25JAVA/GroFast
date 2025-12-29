@@ -861,3 +861,67 @@ export const menuItems = [
   { id: 4, name: "About", path: "/about" },
 ];
 
+export const groceryFAQs = [
+  {
+    id: 1,
+    question: "What is this grocery app?",
+    answer:
+      "This app allows you to order groceries online and get them delivered to your doorstep in minutes."
+  },
+  {
+    id: 2,
+    question: "How fast is the delivery?",
+    answer:
+      "We offer ultra-fast delivery, usually within 10–20 minutes depending on your location."
+  },
+  {
+    id: 3,
+    question: "What products can I order?",
+    answer:
+      "You can order fruits, vegetables, dairy, snacks, beverages, household essentials, and more."
+  },
+  {
+    id: 4,
+    question: "Is there a minimum order value?",
+    answer:
+      "Yes, a minimum order value may apply based on your delivery location."
+  },
+  {
+    id: 5,
+    question: "Are the products fresh?",
+    answer:
+      "Yes, all products are sourced daily to ensure freshness and quality."
+  },
+  {
+    id: 6,
+    question: "What payment methods are accepted?",
+    answer:
+      "We accept UPI, credit/debit cards, net banking, and cash on delivery."
+  },
+  {
+    id: 7,
+    question: "Can I track my order?",
+    answer:
+      "Yes, you can track your order in real time from the app after placing it."
+  },
+  {
+    id: 8,
+    question: "What if an item is missing or damaged?",
+    answer:
+      "You can raise a complaint through the app, and we will provide a refund or replacement."
+  },
+  {
+    id: 9,
+    question: "Do you offer refunds?",
+    answer:
+      "Yes, refunds are processed quickly for eligible items as per our refund policy."
+  },
+  {
+    id: 10,
+    question: "Which locations do you serve?",
+    answer:
+      "We currently serve selected cities and are expanding rapidly."
+  }
+];
+
+

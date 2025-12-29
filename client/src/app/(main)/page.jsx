@@ -4,15 +4,17 @@ import Category from "@/components/UI/Category";
 import BestSellers from "@/components/UI/BestSellers";
 import Testimonial from "@/components/UI/Testimonial";
 import NewsLetter from "@/components/UI/NewsLetter";
+import FAQ from "@/components/UI/FAQ";
 
 function page() {
   return (
-    <div> 
+    <div>
       <HeroSection />
       <Category />
       <BestSellers />
       <Testimonial />
       <NewsLetter />
+      <FAQ />
     </div>
   );
 }
