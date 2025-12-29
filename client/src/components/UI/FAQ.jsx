@@ -4,32 +4,45 @@ import { groceryFAQs } from "../../../public/assets";
 import { Minus, Plus } from "lucide-react";
 
 function FAQ() {
-  const [isShow, setIsShow] = useState(false);
   const [faqId, setFaqId] = useState(null);
+
+  const handleFAQ = (id) => {
+    setFaqId(faqId === id ? null : id);
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-5">
       <h1 className="text-gray-700 font-semibold text-lg sm:text-2xl md:text-3xl">
         Frequently Asked Questions
       </h1>
+
       <div className="flex flex-col gap-5 mt-10">
-        {groceryFAQs?.map((item, id) => (
-          <div key={id} className="">
+        {groceryFAQs.map((item, id) => (
+          <div key={id} className="bg-green-50 rounded-lg p-4">
+            
+            {/* Question */}
             <div
-              onClick={() => setIsShow(!isShow)}
-              className=" flex items-center text-gray-600 justify-between gap-2 bg-green-50 p-2 cursor-pointer"
+              onClick={() => handleFAQ(id)}
+              className="flex justify-between items-center cursor-pointer text-gray-700"
             >
-              <h1 className=" text-lg sm:text-lg font-semibold">
-                {item?.question}
+              <h1 className="text-lg font-semibold">
+                {item.question}
               </h1>
-              {!isShow ? <Plus /> : <Minus />}
+              {faqId === id ? <Minus /> : <Plus />}
             </div>
+
+            {/* Answer with animation */}
             <div
-              className={`p-2 ${
-                isShow ? "block duration-200 transition" : "hidden"
-              }`}
+              className={`overflow-hidden transition-all duration-300 ease-in-out
+                ${
+                  faqId === id
+                    ? "max-h-40 opacity-100 mt-2"
+                    : "max-h-0 opacity-0"
+                }`}
             >
-              <span>{item?.answer}</span>
+              <p className="text-gray-600">
+                {item.answer}
+              </p>
             </div>
           </div>
         ))}
