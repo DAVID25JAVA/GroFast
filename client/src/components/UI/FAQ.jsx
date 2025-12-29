@@ -19,15 +19,12 @@ function FAQ() {
       <div className="flex flex-col gap-5 mt-10">
         {groceryFAQs.map((item, id) => (
           <div key={id} className="bg-green-50 rounded-lg p-4">
-            
             {/* Question */}
             <div
               onClick={() => handleFAQ(id)}
               className="flex justify-between items-center cursor-pointer text-gray-700"
             >
-              <h1 className="text-lg font-semibold">
-                {item.question}
-              </h1>
+              <h1 className="text-lg font-semibold">{item.question}</h1>
               {faqId === id ? <Minus /> : <Plus />}
             </div>
 
@@ -40,9 +37,7 @@ function FAQ() {
                     : "max-h-0 opacity-0"
                 }`}
             >
-              <p className="text-gray-600">
-                {item.answer}
-              </p>
+              <p className="text-gray-600">{item.answer}</p>
             </div>
           </div>
         ))}
