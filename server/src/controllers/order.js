@@ -48,3 +48,19 @@ export const getOrderByUserId = async (req, res) => {
     return res.json({ success: false, message: error?.message });
   }
 };
+
+// Get All order for Admin and Seller
+export const getAllOrder = async (req, res) => {
+  try {
+    const allorder = await orderModel
+      .find({
+        $or: [{ paymentTeype: "COD", isPaid: true }],
+      })
+      .populate("items.product address")
+      .sort({ createdAt: -1 });
+    return res.json({ success: true, allorder });
+  } catch (error) {
+    console.log("Get all order error--->", error?.message);
+    return res.json({ success: false, message: error?.message });
+  }
+};

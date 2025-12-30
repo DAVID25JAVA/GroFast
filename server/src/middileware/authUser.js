@@ -14,7 +14,7 @@ const authUser = async (req, res, next) => {
       return res.status(401).json({ success: false, message: "Not Authorized" });
     }
 
-    req.user = { id: decoded.id }; // ✅ correct place
+    req.user = { id: decoded.id };  
     next();
   } catch (error) {
     console.log(error.message);
