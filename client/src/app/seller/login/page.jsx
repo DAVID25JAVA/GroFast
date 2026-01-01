@@ -1,18 +1,43 @@
 "use client";
+import { Api } from "@/components/API/Api";
 import { useUser } from "@/context/userContext";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 function page() {
-  const { isSeller, setIsSeller } = useUser();
+  const { isSeller, setIsSeller, setIsLoading } = useUser();
+  const [formdata, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const router = useRouter();
 
-  console.log(isSeller);
+  // console.log("formData--->", formdata);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setIsSeller(true);
-    router.push("/seller")
+    // setIsLoading(true);
+    const payload = {
+      email: formdata.email,
+      password: formdata.password,
+    };
+    console.log("Payload-->", payload);
+
+    try {
+      setIsLoading(true);
+      const data = await Api("post", "/seller/login", payload);
+      console.log("Seller login--->", data);
+      setIsLoading(false);
+      if (data.success) {
+        setIsSeller(true);
+        router.push("/seller");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setIsSeller(false);
+      toast.error(error?.message);
+    }
   };
 
   return (
@@ -21,13 +46,17 @@ function page() {
         <p className="text-2xl md:text-3xl font-semibold text-gray-700 text-center pt-5">
           Seller <span className="text-primary">Login </span>
         </p>
-        <form action="" className=""  onSubmit={handleLogin}>
+        <form action="" className="" onSubmit={handleLogin}>
           <div>
             <label htmlFor="" className="text-gray-600 text-base">
               Email
             </label>
             <input
               type="email"
+              value={formdata?.email}
+              onChange={(e) =>
+                setFormData({ ...formdata, email: e.target.value })
+              }
               placeholder="Enter your email"
               className="border border-primary mt-1 p-2 focus:outline-none w-full mb-6"
             />
@@ -38,6 +67,10 @@ function page() {
             </label>
             <input
               type="password"
+              value={formdata?.password}
+              onChange={(e) =>
+                setFormData({ ...formdata, password: e.target.value })
+              }
               placeholder="Enter your password"
               className="border border-primary mt-1 p-2 focus:outline-none w-full"
             />

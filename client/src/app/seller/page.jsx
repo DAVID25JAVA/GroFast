@@ -6,18 +6,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/UI/button";
 
 function page() {
-  const pathName = usePathname();
   const { isSeller } = useUser();
-  console.log(isSeller);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (pathName == "/seller" && !isSeller) {
-      router.push("/seller/login");
-      return;
-    }
-  }, [pathName, isSeller]);
+ 
 
   return (
     <div className="bg-white">

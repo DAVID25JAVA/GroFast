@@ -9,12 +9,11 @@ function layout({ children }) {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      {isSeller&& <SellerNavbar />
-}
-      
+      {isSeller && <SellerNavbar />}
+
       {/* Sidebar + Main Content */}
       <div className="flex flex-1 overflow-hidden">
-        {isSeller&& <SellerSidebar />}
+        {isSeller && <SellerSidebar />}
 
         {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
