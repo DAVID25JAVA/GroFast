@@ -1,9 +1,60 @@
-import React from "react";
+"use client";
+import { useEffect, useState } from "react";
 import { dummyProducts } from "../../../../public/assets";
+import { useUser } from "@/context/userContext";
+import { Api } from "@/components/API/Api";
+import toast from "react-hot-toast";
+import Loader from "@/components/UI/Loader";
 
 function page() {
+  const { setIsLoading, isLoading } = useUser();
+  const [product, setProduct] = useState([]);
 
+  useEffect(() => {
+    fetchProduct();
+  }, []);
 
+  const fetchProduct = async () => {
+    try {
+      setIsLoading(true);
+      const data = await Api("get", "/product/get");
+      setIsLoading(false);
+      if (data?.success) {
+        setProduct(data?.product);
+      } else {
+        toast.error(data?.message);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log(error?.message);
+      setIsLoading(false);
+    }
+  };
+
+  console.log(product);
+
+  const isStock = async (id, inStock) => {
+    try {
+      setIsLoading(true);
+      const isStock = await Api("post", "/product/update-stock", {
+        id,
+        inStock,
+      });
+      setIsLoading(false);
+      if (isStock?.success) {
+        toast.success(isStock?.message);
+        fetchProduct();
+      }
+    } catch (error) {
+      console.log(error?.message);
+      toast.error(error?.message);
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
@@ -23,12 +74,12 @@ function page() {
                 </tr>
               </thead>
               <tbody className="text-sm text-gray-500">
-                {dummyProducts?.slice(0,10)?.map((product, index) => (
+                {product?.map((product, index) => (
                   <tr key={index} className="border-t border-gray-500/20">
                     <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
                       <div className="border border-gray-300 rounded overflow-hidden">
                         <img
-                          src={product.image[0]?.src}
+                          src={product.image[0]}
                           alt="Product"
                           className="w-16"
                         />
@@ -45,6 +96,9 @@ function page() {
                       <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
                         <input
                           type="checkbox"
+                          onClick={() =>
+                            isStock(product?._id, !product?.inStock)
+                          }
                           className="sr-only peer"
                           defaultChecked={product.inStock}
                         />

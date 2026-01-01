@@ -44,6 +44,7 @@ export function UserProvider({ children }) {
         isSeller,
         setIsSeller,
         isSearch,
+        isLoading,
         setIsSearch,
         setIsLoading,
       }}

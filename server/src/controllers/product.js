@@ -77,7 +77,7 @@ export const getProductById = async (req, res) => {
 // Update stock Product API--->"/api/product/in-stock/:id"
 export const updateStock = async (req, res) => {
   try {
-    const { inStock, id } = req.body;
+    const { id, inStock } = req.body;
     await productModel.findByIdAndUpdate(id, {
       inStock,
     });
