@@ -31,8 +31,6 @@ function page() {
     }
   };
 
-  console.log(product);
-
   const isStock = async (id, inStock) => {
     try {
       setIsLoading(true);

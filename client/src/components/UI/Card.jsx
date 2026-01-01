@@ -8,7 +8,7 @@ function ProductCard({ productData }) {
   const [count, setCount] = useState(0);
   const { addToCart, cart, updateQuantity } = useCart();
 
-  const { _id, name, category, image, rating, offerPrice, price } =
+  const { _id, tittle, category, image, rating, offerPrice, price } =
     productData || {};
 
   return (
@@ -17,7 +17,7 @@ function ProductCard({ productData }) {
         <Link href={`/products/details/${_id}`}>
           <img
             className="group-hover:scale-105 transition max-w-26 md:max-w-28"
-            src={image?.[0]?.src}
+            src={image?.[0]}
             alt={productData?.name}
           />
         </Link>
@@ -26,7 +26,7 @@ function ProductCard({ productData }) {
       <div className="text-gray-500/60 text-sm">
         <p>{category}</p>
         <p className="text-gray-700 font-medium text-lg truncate w-full">
-          {name}
+          {tittle}
         </p>
 
         {/* Rating */}
