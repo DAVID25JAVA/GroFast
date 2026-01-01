@@ -26,6 +26,7 @@ function page() {
 
     try {
       setIsLoading(true);
+
       const data = await Api("post", "/seller/login", payload);
       console.log("Seller login--->", data);
       setIsLoading(false);

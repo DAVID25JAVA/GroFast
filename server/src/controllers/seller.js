@@ -12,13 +12,18 @@ export const sellerLogin = async (req, res) => {
       const token = await jwt.sign({ email }, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
+      console.log("Sellet token -->",req.cookies);
+
       res.cookie("sellerToken", token, {
         httpOnly: true,
-        secure: (process.env.NODE_ENV = "production"),
-        sameSite: (process.env.NODE_ENV = "production" ? "none" : "strict"),
+        secure: process.env.NODE_ENV == "production",
+        sameSite: process.env.NODE_ENV == "production" ? "none" : "strict",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
-      return res.json({ success: false, message: "Logged In" });
+
+      console.log("sellerToken---", req.cookie);
+
+      return res.json({ success: true, message: "Logged In" });
     } else {
       return res.json({ success: false, message: "Invalid credentials!" });
     }
@@ -38,14 +43,13 @@ export const isSellerAuth = async (req, res) => {
   }
 };
 
-
 // Seller logout
-export const  sellerLogout = (req, res) => {
+export const sellerLogout = (req, res) => {
   try {
     res.clearCookie("sellerToken", {
       httpOnly: true,
-      secure: (process.env.NODE_ENV = "production"),
-      sameSite: (process.env.NODE_ENV = "production" ? "none" : "strict"),
+      secure: process.env.NODE_ENV == "production",
+      sameSite: process.env.NODE_ENV == "production" ? "none" : "strict",
     });
     return res.json({ success: true, message: "logged Out" });
   } catch (error) {

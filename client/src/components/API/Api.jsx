@@ -6,10 +6,7 @@ const BackendURL = "http://localhost:4000/api";
 // Create axios instance
 const api = axios.create({
   baseURL: BackendURL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-    withCredentials: true
+  withCredentials: true,
 });
 
 // Common API call method
@@ -25,7 +22,7 @@ export const Api = async (method, url, data = {}, params = {}) => {
     return response.data;
   } catch (error) {
     console.error("API Error:", error.response?.data || error.message);
-    toast.error(error?.message)
+    toast.error(error?.message);
     throw error;
   }
 };

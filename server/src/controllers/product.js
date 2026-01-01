@@ -4,22 +4,45 @@ import { v2 as cloudinary } from "cloudinary";
 // Add Product API--->"api/product/add"
 export const addProduct = async (req, res) => {
   try {
+    if (!req.body.productData) {
+      console.log(" No productData in request");
+      return res.status(400).json({
+        success: false,
+        message: "Product data is missing",
+      });
+    }
+
+    if (!req.files || req.files.length === 0) {
+      console.log(" No files in request");
+      return res.status(400).json({
+        success: false,
+        message: "Images are missing",
+      });
+    }
+
     const productData = JSON.parse(req.body.productData);
 
     //   get image
     const image = req.files;
+    console.log(image);
+
     //   upload image on cloudinary
     const imagesUrl = await Promise.all(
       image.map(async (item) => {
-        let result = cloudinary.uploader.upload(item?.path, {
+        let result = await cloudinary.uploader.upload(item?.path, {
           resource_type: "image",
         });
-        return result;
+        return result.secure_url;
       })
     );
 
     await productModel.create({ ...productData, image: imagesUrl });
-    return res.json({ success: true, message: "Product added successfully" });
+    return res.json({
+      success: true,
+      message: "Product added successfully",
+      product: productData,
+      image: imagesUrl,
+    });
   } catch (error) {
     console.log("Add product error---->", error?.message);
     return res.json({ success: false, message: error.message });
