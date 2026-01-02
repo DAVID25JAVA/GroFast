@@ -6,11 +6,10 @@ import { Api } from "@/components/API/Api";
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
-  const [isUser, setIsUser] = useState(true);
+  const [isUser, setIsUser] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isForm, setIsForm] = useState(false);
-  const [isSearch, setIsSearch] = useState(true);
 
   useEffect(() => {
     isSellerStatus();
@@ -43,9 +42,7 @@ export function UserProvider({ children }) {
         handleUser,
         isSeller,
         setIsSeller,
-        isSearch,
         isLoading,
-        setIsSearch,
         setIsLoading,
       }}
     >

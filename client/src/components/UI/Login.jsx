@@ -5,7 +5,8 @@ import React, { useState } from "react";
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
-  const { setIsForm } = useUser();
+  const { isForm, setIsForm } = useUser();
+  if (!isForm) return null;
 
   return (
     <div className=" backdrop-blur-sm h-full mx-auto px-4 sm:px-6 md:px-8 mb-10 fixed inset-0   flex justify-center items-center z-50">

@@ -17,8 +17,8 @@ import { useCart } from "@/context/cartContext";
 import { useSearch } from "@/context/searchContext";
 
 function Header() {
-  const { isForm, setIsForm, isUser, setIsSearch } = useUser();
-   const { setOpenSearch } = useSearch();
+  const { isForm, setIsForm, isUser } = useUser();
+  const { setOpenSearch } = useSearch();
   const { cart } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -115,13 +115,22 @@ function Header() {
                     </div>
                   </div>
                 ) : (
-                  <Button
+                  <>
+                    <button
+                      onClick={() => setIsForm(true)}
+                      className="bg-primary text-white px-5 py-2 rounded-md"
+                    >
+                      {" "}
+                      Login
+                    </button>
+                    {/* <Button
                     variant={"primary"}
                     className={"cursor-pointer pt-2 sm:block hidden"}
-                    onClick={() => setIsForm(!isForm)}
+                    onClick={() => setOpenForm(true)}
                   >
                     Login
-                  </Button>
+                  </Button> */}
+                  </>
                 )}
 
                 {/* Menu icon for small screen */}
