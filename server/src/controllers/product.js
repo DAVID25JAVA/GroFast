@@ -65,7 +65,9 @@ export const getProduct = async (req, res) => {
 // Get Product API--->"/api/product/:id"
 export const getProductById = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
+    // console.log("product id-->", id);
+    
     const data = await productModel.findById(id);
     return res.json({ success: true, data });
   } catch (error) {
