@@ -28,6 +28,7 @@ export const register = async (req, res) => {
 
     return res.json({
       success: true,
+      message: "User register successfully",
       user: { name: user?.name, email: user?.email },
     });
   } catch (error) {
@@ -69,6 +70,7 @@ export const login = async (req, res) => {
 
     return res.json({
       success: true,
+      message: "Login successfully",
       user: { name: userexist?.name, email: userexist?.email },
     });
   } catch (error) {

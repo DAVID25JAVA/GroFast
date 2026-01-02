@@ -15,11 +15,15 @@ import {
 import { useUser } from "@/context/userContext";
 import { useCart } from "@/context/cartContext";
 import { useSearch } from "@/context/searchContext";
+import { Api } from "../API/Api";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 function Header() {
-  const { isForm, setIsForm, isUser } = useUser();
+  const { isForm, setIsForm, isUser, setIsUser } = useUser();
   const { setOpenSearch } = useSearch();
   const { cart } = useCart();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const cartQunatity = Object.values(cart).reduce(
@@ -35,6 +39,22 @@ function Header() {
   // Close mobile menu when a link is clicked
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const logout = async () => {
+    try {
+      const res = await Api("get", "/user/logout");
+      console.log("logout------>", res);
+      if (res?.success) {
+        toast.success(res?.message);
+        setIsUser(false);
+        router.push("/");
+      } else {
+        toast.success(res?.message);
+      }
+    } catch (error) {
+      console.log(error?.message);
+    }
   };
 
   return (
@@ -108,7 +128,10 @@ function Header() {
                         <li className="cursor-pointer hover:text-green-600">
                           <Link href={"/my-order"}>My Order</Link>
                         </li>
-                        <li className="cursor-pointer hover:text-red-600">
+                        <li
+                          onClick={logout}
+                          className="cursor-pointer hover:text-red-600"
+                        >
                           Sign Out
                         </li>
                       </ul>
