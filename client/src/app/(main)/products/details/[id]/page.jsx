@@ -25,6 +25,8 @@ function Page() {
     try {
       setIsLoading(true);
       const res = await Api("get", `/product/${id}`);
+      console.log(res);
+      
       if (res?.success) {
         setProduct(res.data);
         setThumbnail(res.data?.image?.[0] || null);
@@ -96,7 +98,7 @@ function Page() {
 
           <div className="flex gap-4 mt-10">
             <button
-              onClick={() => addToCart(product)}
+              onClick={() => addToCart(product?._id)}
               className="w-full py-3 font-medium cursor-pointer bg-gray-100 hover:bg-gray-200"
             >
               Add to Cart

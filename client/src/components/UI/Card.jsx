@@ -6,7 +6,7 @@ import { useCart } from "@/context/cartContext";
 
 function ProductCard({ productData }) {
   const [count, setCount] = useState(0);
-  const { addToCart, cart, updateQuantity } = useCart();
+  const { addToCart,  cartItems, updateQuantity } = useCart();
 
   const { _id, tittle, category, image, rating, offerPrice, price } =
     productData || {};
@@ -67,14 +67,14 @@ function ProductCard({ productData }) {
               <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary rounded select-none">
                 <button
                   onClick={() => {
-                    updateQuantity(_id, cart[_id] - 1), setCount(count - 1);
+                    updateQuantity(_id, cartItems[_id] - 1), setCount(count - 1);
                   }}
                   className="cursor-pointer text-white text-md px-2 h-full"
                 >
                   -
                 </button>
                 <span className="w-5 text-center text-white">
-                  {cart[_id] || 0}
+                  {cartItems[_id] || 0}
                 </span>
                 <button
                   onClick={() => {

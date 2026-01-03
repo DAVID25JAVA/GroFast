@@ -1,53 +1,43 @@
 "use client";
-import React, { useContext, useState } from "react";
-import { createContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 import toast from "react-hot-toast";
 
 export const CartContext = createContext();
 
 function CartProvider({ children }) {
-  const [cart, setCart] = useState({});
-
-  console.log(cart);
+  const [cartItems, setCartItems] = useState({});
 
   const addToCart = (productId) => {
-    setCart((prevCart) => ({
-      ...prevCart,
-      [productId]: (prevCart[productId] || 0) + 1,
+    setCartItems((prev) => ({
+      ...prev,
+      [productId]: (prev[productId] || 0) + 1,
     }));
     toast.success("Item added to cart");
   };
 
   const removeToCart = (productId) => {
-    setCart((prevCart) => {
-      const newCart = { ...prevCart };
-      delete newCart[productId];
-      return newCart;
+    setCartItems((prev) => {
+      const copy = { ...prev };
+      delete copy[productId];
+      return copy;
     });
-    toast.success("Item remove from cart");
+    toast.success("Item removed");
   };
 
   const updateQuantity = (productId, quantity) => {
-    setCart((prevCart) => {
+    setCartItems((prev) => {
       if (quantity <= 0) {
-        const newCart = { ...prevCart };
-        delete newCart[productId];
-        return newCart;
+        const copy = { ...prev };
+        delete copy[productId];
+        return copy;
       }
-      return { ...prevCart, [productId]: quantity };
+      return { ...prev, [productId]: quantity };
     });
-    toast.success("Item remove from cart");
   };
 
   return (
     <CartContext.Provider
-      value={{
-        cart,
-        setCart,
-        addToCart,
-        removeToCart,
-        updateQuantity,
-      }}
+      value={{ cartItems, setCartItems, addToCart, removeToCart, updateQuantity }}
     >
       {children}
     </CartContext.Provider>

@@ -13,17 +13,17 @@ function layout({ children }) {
   return (
     <div>
       <Toaster />
-      <UserProvider>
-        <Login/>
-        <CartProvider>
+      <CartProvider>
+        <UserProvider>
+          <Login />
           <SearchProvider>
             <Header />
             <Search />
             <main>{children}</main>
             <Footer />
           </SearchProvider>
-        </CartProvider>
-      </UserProvider>
+        </UserProvider>
+      </CartProvider>
     </div>
   );
 }

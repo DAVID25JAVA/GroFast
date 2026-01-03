@@ -3,20 +3,32 @@ import React, { useEffect, useState } from "react";
 import { dummyProducts } from "../../../../../../public/assets";
 import { useParams } from "next/navigation";
 import ProductCard from "@/components/UI/Card";
+import toast from "react-hot-toast";
+import { Api } from "@/components/API/Api";
 
 function page() {
   const { id } = useParams();
-
+  // console.log(id);
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    fetchProducts(id);
-  }, [id]);
+  // useEffect(() => {
+  //   fetchProducts(id);
+  // }, [id]);
 
-  const fetchProducts = (id) => {
+  const fetchProducts = async (id) => {
     const data = dummyProducts.filter(
       (data) => data.category.toLowerCase() == id
     );
+    try {
+      const res = await Api("get", `/product/${id}`);
+      console.log(res);
+      if (res?.success) {
+        // setProducts(res);
+      }
+    } catch (error) {
+      console.log(error?.message);
+      toast.error(error?.message);
+    }
     setProducts(data);
   };
 

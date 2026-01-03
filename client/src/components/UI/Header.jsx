@@ -22,14 +22,17 @@ import { useRouter } from "next/navigation";
 function Header() {
   const { isForm, setIsForm, isUser, setIsUser } = useUser();
   const { setOpenSearch } = useSearch();
-  const { cart } = useCart();
+  const { cartItems } = useCart();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const cartQunatity = Object.values(cart).reduce(
+  const cartQunatity = Object.values(cartItems).reduce(
     (items, qty) => items + qty,
     0
   );
+
+  console.log("cart-->", cartItems);
+  
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {

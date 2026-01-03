@@ -32,7 +32,7 @@ server.use(cors({ origin: allowOrigin, credentials: true }));
 server.use("/api/user", userRouter);
 server.use("/api/seller", sellerRouter);
 server.use("/api/product", productRouter);
-server.use("/api/cart/update", cartRouter);
+server.use("/api/cart", cartRouter);
 server.use("/api/user/address", addressRouter);
 server.use("/api/order", orderRouter);
 

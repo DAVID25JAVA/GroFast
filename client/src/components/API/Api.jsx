@@ -21,8 +21,8 @@ export const Api = async (method, url, data = {}, params = {}) => {
 
     return response.data;
   } catch (error) {
-    console.error("API Error:", error.response?.data || error.message);
-    toast.error(error?.message);
+    console.log("API Error:", error.response?.data || error.message);
+    // toast.error(error?.message);
     throw error;
   }
 };
