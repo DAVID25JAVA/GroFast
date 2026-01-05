@@ -51,7 +51,7 @@ function ProductCard({ productData }) {
           {/* Cart Action */}
           {quantity === 0 ? (
             <button
-              className="flex items-center justify-center gap-1 bg-primary md:w-20 w-16 h-[34px] rounded text-white font-medium"
+              className="flex cursor-pointer items-center justify-center gap-1 bg-primary md:w-20 w-16 h-[34px] rounded text-white font-medium"
               onClick={() => addToCart(_id)}
             >
               <ShoppingCart size={15} />

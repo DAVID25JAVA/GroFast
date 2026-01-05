@@ -1,65 +1,63 @@
 "use client";
 import { MoveLeft, X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/cartContext";
+import { useUser } from "@/context/userContext";
+import { Api } from "@/components/API/Api";
+import Loader from "@/components/UI/Loader";
+import Image from "next/image";
+import { assets } from "../../../../public/assets";
 
 function page() {
   const [showAddress, setShowAddress] = useState(false);
-  const { cartItems } = useCart();
+  const { cartItems, updateQuantity } = useCart();
+  const { isLoading, setIsLoading } = useUser();
+  const [cartProduct, setCartProduct] = useState([]);
 
-  console.log("cart items--->", cartItems);
-  
+  useEffect(() => {
+    const fetchCartProduct = async () => {
+      try {
+        const ids = Object.keys(cartItems);
+        if (!ids.length) return;
+        setIsLoading(true);
+        const data = await Api("get", `/cart/product?ids=${ids?.join(",")}`);
+        if (data?.success) {
+          setIsLoading(false);
+          setCartProduct(data?.products);
+        }
+      } catch (error) {
+        console.log(error?.message);
+        setIsLoading(false);
+      }
+    };
 
-  const products = [
-    {
-      name: "Running Shoes",
-      description: [
-        "Lightweight and comfortable",
-        "Breathable mesh upper",
-        "Ideal for jogging and casual wear",
-      ],
-      offerPrice: 250,
-      price: 200,
-      quantity: 1,
-      size: 42,
-      image:
-        "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage.png",
-      category: "Footwear",
-    },
-    {
-      name: "Running Shoes",
-      description: [
-        "Lightweight and comfortable",
-        "Breathable mesh upper",
-        "Ideal for jogging and casual wear",
-      ],
-      offerPrice: 250,
-      price: 200,
-      quantity: 1,
-      size: 42,
-      image:
-        "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage2.png",
-      category: "Footwear",
-    },
-    {
-      name: "Running Shoes",
-      description: [
-        "Lightweight and comfortable",
-        "Breathable mesh upper",
-        "Ideal for jogging and casual wear",
-      ],
-      offerPrice: 250,
-      price: 200,
-      quantity: 1,
-      size: 42,
-      image:
-        "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage3.png",
-      category: "Footwear",
-    },
-  ];
+    fetchCartProduct();
+  }, [cartItems, updateQuantity]);
 
-  return (
+  const finalCart = useMemo(() => {
+    return cartProduct.map((product) => ({
+      ...product,
+      quantity: cartItems[product?._id] || 0,
+      subtotal: product.offerPrice * (cartItems[product._id] || 0),
+    }));
+  }, [cartProduct, cartItems]);
+
+  // console.log("final cart-->", finalCart);
+
+  // Calculate totals
+  const totalPrice = useMemo(() => {
+    return finalCart.reduce((sum, item) => sum + item.subtotal, 0);
+  }, [finalCart]);
+
+  const tax = +(totalPrice * 0.02).toFixed(2);
+  const grandTotal = totalPrice + tax;
+
+  // console.log("total price-->", grandTotal);
+
+  if (isLoading) return <Loader />;
+
+  return finalCart.length > 0 ? (
     <div className="  max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-32 mb-20">
       <div className="flex flex-col md:flex-row ">
         <div className="flex-1 max-w-4xl">
@@ -73,47 +71,52 @@ function page() {
             <p className="text-center">Action</p>
           </div>
 
-          {products.map((product, index) => (
+          {finalCart.map((product) => (
             <div
-              key={index}
-              className="grid grid-cols-[2fr_1fr_1fr] text-gray-500 items-center text-sm md:text-base font-medium pt-3"
+              key={product._id}
+              className="grid grid-cols-[2fr_1fr_1fr] items-center text-gray-500 pt-3"
             >
-              <div className="flex items-center md:gap-6 gap-3">
-                <div className="cursor-pointer w-24 h-24 flex items-center justify-center border border-gray-300 rounded overflow-hidden">
-                  <img
-                    className="max-w-full h-full object-cover "
-                    src={product.image}
-                    alt={product.name}
-                  />
-                </div>
+              <div className="flex items-center gap-4">
+                <img
+                  src={product.image[0]}
+                  className="w-24 h-24 object-cover border rounded"
+                />
+
                 <div>
-                  <p className="hidden md:block font-semibold">
-                    {product.name}
-                  </p>
-                  <div className="font-normal text-gray-500/70">
-                    <p>
-                      Size: <span>{product.size || "N/A"}</span>
-                    </p>
-                    <div className="flex items-center">
-                      <p>Qty:</p>
-                      <select className="outline-none">
-                        {Array(5)
-                          .fill("")
-                          .map((_, index) => (
-                            <option key={index} value={index + 1}>
-                              {index + 1}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
+                  <p className="font-semibold">{product.tittle}</p>
+
+                  <div className="flex items-center gap-2 mt-1">
+                    <span>Qty:</span>
+
+                    <select
+                      value={product.quantity}
+                      onChange={(e) =>
+                        updateQuantity(product._id, Number(e.target.value))
+                      }
+                      className="border px-2 py-1 outline-none"
+                    >
+                      {Array(10)
+                        .fill(0)
+                        .map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                    </select>
                   </div>
                 </div>
               </div>
-              <p className="text-center">
-                ${product.offerPrice * product.quantity}
-              </p>
-              <button className="cursor-pointer mx-auto flex items-center justify-center w-6 h-6 text-center bg-red-500 text-white rounded-full">
-                <X size={20} />
+
+              {/* Subtotal */}
+              <p className="text-center">${grandTotal}</p>
+
+              <button
+                onClick={() =>
+                  updateQuantity(product?._id, product?.quantity - 1)
+                }
+                className="mx-auto bg-red-500 text-white cursor-pointer rounded-full w-6 h-6 flex items-center justify-center"
+              >
+                <X size={16} />
               </button>
             </div>
           ))}
@@ -192,6 +195,19 @@ function page() {
           </button>
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="h-screen flex justify-center items-center flex-col">
+      <p className="text-lg sm:text-xl md:text-3xl text-red-500 font-bold">
+        {" "}
+        <Image alt="cart" src={assets?.cart} width={300} className="" />
+        Your cart is empty !
+      </p>
+      <Link href={"/products"}>
+        <button className="bg-primary px-5 py-2 rounded-md text-white mt-10 cursor-pointer">
+          Start Shopping
+        </button>
+      </Link>
     </div>
   );
 }

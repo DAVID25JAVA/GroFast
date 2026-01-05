@@ -3,9 +3,12 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { assets } from "../../../../public/assets";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/userContext";
+import { Api } from "@/components/API/Api";
 
 function page() {
   const router = useRouter();
+  const { setIsLoading } = useUser();
   const [address, setAddress] = useState({
     firstName: "",
     lastName: "",
@@ -18,8 +21,40 @@ function page() {
     country: "",
   });
 
-  const handleForm = (e) => {
+  const handleForm = async (e) => {
     e.preventDefault();
+    const payload = {
+      firstName: address?.firstName,
+      lastName: address?.lastName,
+      email: address?.email,
+      street: address?.street,
+      city: address?.city,
+      state: address?.state,
+      phone: address?.phone,
+      zipCode: address?.zipCode,
+      country: address?.country,
+    };
+    try {
+      setIsLoading(true);
+      const data = await Api("post", "/user/address/add", payload);
+      if (data?.success) {
+        setIsLoading(false);
+        setAddress({
+          firstName: "",
+          lastName: "",
+          email: "",
+          street: "",
+          city: "",
+          state: "",
+          phone: 0,
+          zipCode: "",
+          country: "",
+        });
+      }
+    } catch (error) {
+      console.log("Address error--->", error?.message);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -27,7 +62,10 @@ function page() {
       <p className="text-lg sm:text-2xl md:text-3xl font-semibold text-gray-700 pb-5">
         Add Shipping <span className="text-primary">Address</span>
       </p>
-      <form className="grid grid-cols-1 sm:grid-cols-2 mt-5">
+      <form
+        onSubmit={handleForm}
+        className="grid grid-cols-1 sm:grid-cols-2 mt-5"
+      >
         {/* image */}
         <div className="hidden sm:block md:block">
           <Image
@@ -139,7 +177,10 @@ function page() {
             />
           </div>
 
-          <button className="w-full bg-primary text-white py-2 cursor-pointer">
+          <button
+            type="submit"
+            className="w-full bg-primary text-white py-2 cursor-pointer"
+          >
             Add Address
           </button>
         </div>

@@ -45,7 +45,7 @@ export function UserProvider({ children }) {
   const isUserStatus = async () => {
     try {
       const res = await Api("get", "/user/is-auth");
-      console.log(res);
+      // console.log(res);
       if (res?.success) {
         setIsUser(true);
         setUser(res.user);

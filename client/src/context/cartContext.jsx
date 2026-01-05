@@ -33,6 +33,7 @@ function CartProvider({ children }) {
       }
       return { ...prev, [productId]: quantity };
     });
+    toast.success("Cart updated")
   };
 
   return (
