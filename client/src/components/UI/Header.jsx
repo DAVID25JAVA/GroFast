@@ -31,8 +31,7 @@ function Header() {
     0
   );
 
-  console.log("cart-->", cartItems);
-  
+  // console.log("cart-->", cartItems);
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {

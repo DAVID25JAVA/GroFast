@@ -2,11 +2,13 @@
 import { MoveLeft, X } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
- 
+import { useCart } from "@/context/cartContext";
 
 function page() {
   const [showAddress, setShowAddress] = useState(false);
- 
+  const { cartItems } = useCart();
+
+  console.log("cart items--->", cartItems);
   
 
   const products = [

@@ -1,15 +1,15 @@
 "use client";
-import { useState } from "react";
 import Link from "next/link";
 import { ShoppingCart, StarIcon } from "lucide-react";
 import { useCart } from "@/context/cartContext";
 
 function ProductCard({ productData }) {
-  const [count, setCount] = useState(0);
-  const { addToCart,  cartItems, updateQuantity } = useCart();
+  const { addToCart, cartItems, updateQuantity } = useCart();
 
   const { _id, tittle, category, image, rating, offerPrice, price } =
     productData || {};
+
+  const quantity = cartItems[_id] || 0;
 
   return (
     <div className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white">
@@ -18,7 +18,7 @@ function ProductCard({ productData }) {
           <img
             className="group-hover:scale-105 transition max-w-26 md:max-w-28"
             src={image?.[0]}
-            alt={productData?.name}
+            alt={tittle}
           />
         </Link>
       </div>
@@ -33,17 +33,13 @@ function ProductCard({ productData }) {
         <div className="flex items-center gap-0.5">
           {Array(5)
             .fill("")
-            .map((_, i) =>
-              rating > i ? (
-                <StarIcon key={i} size={15} />
-              ) : (
-                <StarIcon key={i} size={15} />
-              )
-            )}
+            .map((_, i) => (
+              <StarIcon key={i} size={15} />
+            ))}
           <p>({rating})</p>
         </div>
 
-        {/* Price + Add to cart */}
+        {/* Price + Cart */}
         <div className="flex items-end justify-between mt-3">
           <p className="md:text-xl text-base font-medium text-primary">
             ${offerPrice}{" "}
@@ -52,41 +48,36 @@ function ProductCard({ productData }) {
             </span>
           </p>
 
-          <div className="text-primary">
-            {count === 0 ? (
+          {/* Cart Action */}
+          {quantity === 0 ? (
+            <button
+              className="flex items-center justify-center gap-1 bg-primary md:w-20 w-16 h-[34px] rounded text-white font-medium"
+              onClick={() => addToCart(_id)}
+            >
+              <ShoppingCart size={15} />
+              Add
+            </button>
+          ) : (
+            <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary rounded select-none">
               <button
-                className="flex items-center cursor-pointer justify-center gap-1 bg-primary md:w-20 w-16 h-[34px] rounded text-white font-medium"
-                onClick={() => {
-                  addToCart(productData?._id), setCount(count + 1);
-                }}
+                onClick={() => updateQuantity(_id, quantity - 1)}
+                className="cursor-pointer text-white text-md px-2 h-full"
               >
-                <ShoppingCart size={15} />
-                Add
+                -
               </button>
-            ) : (
-              <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary rounded select-none">
-                <button
-                  onClick={() => {
-                    updateQuantity(_id, cartItems[_id] - 1), setCount(count - 1);
-                  }}
-                  className="cursor-pointer text-white text-md px-2 h-full"
-                >
-                  -
-                </button>
-                <span className="w-5 text-center text-white">
-                  {cartItems[_id] || 0}
-                </span>
-                <button
-                  onClick={() => {
-                    addToCart(productData?._id), setCount(count + 1);
-                  }}
-                  className="cursor-pointer text-white text-md px-2 h-full"
-                >
-                  +
-                </button>
-              </div>
-            )}
-          </div>
+
+              <span className="w-5 text-center text-white">
+                {quantity}
+              </span>
+
+              <button
+                onClick={() => addToCart(_id)}
+                className="cursor-pointer text-white text-md px-2 h-full"
+              >
+                +
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
