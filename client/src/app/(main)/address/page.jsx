@@ -5,51 +5,62 @@ import { assets } from "../../../../public/assets";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/userContext";
 import { Api } from "@/components/API/Api";
+import toast from "react-hot-toast";
 
 function page() {
   const router = useRouter();
-  const { setIsLoading } = useUser();
-  const [address, setAddress] = useState({
+  console.log(router);
+  
+  const { setIsLoading, setUser, user } = useUser();
+  console.log(user);
+  const [userAddress, setUserAddress] = useState({
     firstName: "",
     lastName: "",
     email: "",
     street: "",
     city: "",
     state: "",
-    phone: 0,
+    phone: "",
     zipCode: "",
     country: "",
   });
 
   const handleForm = async (e) => {
     e.preventDefault();
-    const payload = {
-      firstName: address?.firstName,
-      lastName: address?.lastName,
-      email: address?.email,
-      street: address?.street,
-      city: address?.city,
-      state: address?.state,
-      phone: address?.phone,
-      zipCode: address?.zipCode,
-      country: address?.country,
+    const address = {
+      firstName: userAddress?.firstName,
+      lastName: userAddress?.lastName,
+      email: userAddress?.email,
+      street: userAddress?.street,
+      city: userAddress?.city,
+      state: userAddress?.state,
+      phone: userAddress?.phone,
+      zipCode: userAddress?.zipCode,
+      country: userAddress?.country,
     };
     try {
       setIsLoading(true);
-      const data = await Api("post", "/user/address/add", payload);
+      const data = await Api("post", "/user/address/add", {
+        address,
+        userId: user?._id,
+      });
       if (data?.success) {
         setIsLoading(false);
-        setAddress({
+        toast.success(data?.message);
+        setUserAddress({
           firstName: "",
           lastName: "",
           email: "",
           street: "",
           city: "",
           state: "",
-          phone: 0,
+          phone: "",
           zipCode: "",
           country: "",
         });
+         router.push("/cart")
+      } else {
+        toast.error(data?.message);
       }
     } catch (error) {
       console.log("Address error--->", error?.message);
@@ -81,9 +92,9 @@ function page() {
             <input
               type="text"
               name="firstName"
-              value={address?.firstName}
+              value={userAddress?.firstName}
               onChange={(e) =>
-                setAddress({ ...address, firstName: e.target.value })
+                setUserAddress({ ...userAddress, firstName: e.target.value })
               }
               placeholder="First name"
               className="border border-primary mt-1 p-2 focus:outline-none   w-full placeholder:text-primary"
@@ -91,9 +102,9 @@ function page() {
             <input
               type="text"
               name="lastName"
-              value={address?.lastName}
+              value={userAddress?.lastName}
               onChange={(e) =>
-                setAddress({ ...address, lastName: e.target.value })
+                setUserAddress({ ...userAddress, lastName: e.target.value })
               }
               placeholder="Last name"
               className="border border-primary mt-1 p-2 focus:outline-none   w-full placeholder:text-primary"
@@ -103,9 +114,9 @@ function page() {
             <input
               type="email"
               name="email"
-              value={address?.email}
+              value={userAddress?.email}
               onChange={(e) =>
-                setAddress({ ...address, email: e.target.value })
+                setUserAddress({ ...userAddress, email: e.target.value })
               }
               placeholder="Email address"
               className="border border-primary mt-1 p-2 focus:outline-none   w-full placeholder:text-primary"
@@ -113,9 +124,9 @@ function page() {
             <input
               type="text"
               name="street"
-              value={address?.street}
+              value={userAddress?.street}
               onChange={(e) =>
-                setAddress({ ...address, street: e.target.value })
+                setUserAddress({ ...userAddress, street: e.target.value })
               }
               placeholder="Street"
               className="border border-primary mt-1 p-2 focus:outline-none   w-full placeholder:text-primary"
@@ -125,17 +136,19 @@ function page() {
             <input
               type="text"
               name="city"
-              value={address?.city}
-              onChange={(e) => setAddress({ ...address, city: e.target.value })}
+              value={userAddress?.city}
+              onChange={(e) =>
+                setUserAddress({ ...userAddress, city: e.target.value })
+              }
               placeholder="City"
               className="border border-primary mt-1 p-2 focus:outline-none   w-full placeholder:text-primary"
             />
             <input
               type="text"
               name="state"
-              value={address?.state}
+              value={userAddress?.state}
               onChange={(e) =>
-                setAddress({ ...address, state: e.target.value })
+                setUserAddress({ ...userAddress, state: e.target.value })
               }
               placeholder="State"
               className="border border-primary mt-1 p-2 focus:outline-none   w-full placeholder:text-primary"
@@ -143,11 +156,11 @@ function page() {
           </div>
           <div className="flex items-center gap-3">
             <input
-              type="text"
+              type="number"
               name="zipCode"
-              value={address?.zipCode}
+              value={userAddress?.zipCode}
               onChange={(e) =>
-                setAddress({ ...address, zipCode: e.target.value })
+                setUserAddress({ ...userAddress, zipCode: e.target.value })
               }
               placeholder="Zip code"
               className="border border-primary mt-1 p-2 focus:outline-none   w-full placeholder:text-primary"
@@ -155,9 +168,9 @@ function page() {
             <input
               type="text"
               name="country"
-              value={address?.country}
+              value={userAddress?.country}
               onChange={(e) =>
-                setAddress({ ...address, country: e.target.value })
+                setUserAddress({ ...userAddress, country: e.target.value })
               }
               placeholder="Country"
               className="border border-primary mt-1 p-2 focus:outline-none   w-full placeholder:text-primary"
@@ -168,9 +181,9 @@ function page() {
             <input
               type="number"
               name="phone"
-              value={address?.phone}
+              value={userAddress?.phone}
               onChange={(e) =>
-                setAddress({ ...address, phone: e.target.value })
+                setUserAddress({ ...userAddress, phone: e.target.value })
               }
               placeholder="Phone"
               className="border border-primary mt-1 p-2 focus:outline-none   w-full placeholder:text-primary"

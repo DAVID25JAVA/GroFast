@@ -4,7 +4,7 @@ import productModel from "../models/product.js";
 export const updateCart = async (req, res) => {
   try {
     const { userId, cartItems } = req.body;
-    console.log("id------>", userId, "cartItems--->", cartItems);
+    // console.log("id------>", userId, "cartItems--->", cartItems);
     const data = await User.findByIdAndUpdate(userId, { cartItems });
     return res.json({ success: true, message: "Cart updated", data });
   } catch (error) {
@@ -16,7 +16,7 @@ export const updateCart = async (req, res) => {
 export const getCartProduct = async (req, res) => {
   try {
     const ids = req.query.ids.split(",");
-    console.log("ids --->", ids);
+    // console.log("ids --->", ids);
 
     const products = await productModel.find(
       { _id: { $in: ids } },

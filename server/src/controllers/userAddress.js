@@ -4,6 +4,7 @@ import userAddressModel from "../models/address.js";
 export const addAddress = async (req, res) => {
   try {
     const { userId, address } = req.body;
+    // console.log(userId, address);
     if (!address || !userId) {
       return res.json({ success: false, message: "All fields are required!" });
     }
@@ -17,7 +18,7 @@ export const addAddress = async (req, res) => {
 
 export const getAddress = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.user?.id;
     const address = await userAddressModel.find({ userId });
     return res.json({ success: true, address });
   } catch (error) {

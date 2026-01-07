@@ -8,12 +8,15 @@ import { Api } from "@/components/API/Api";
 import Loader from "@/components/UI/Loader";
 import Image from "next/image";
 import { assets } from "../../../../public/assets";
+import toast from "react-hot-toast";
 
 function page() {
   const [showAddress, setShowAddress] = useState(false);
   const { cartItems, updateQuantity } = useCart();
-  const { isLoading, setIsLoading } = useUser();
+  const { isLoading, setIsLoading, user } = useUser();
   const [cartProduct, setCartProduct] = useState([]);
+  const [address, setAddress] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
 
   useEffect(() => {
     const fetchCartProduct = async () => {
@@ -35,6 +38,27 @@ function page() {
     fetchCartProduct();
   }, [cartItems, updateQuantity]);
 
+  useEffect(() => {
+    fetchAddress();
+  }, []);
+
+  const fetchAddress = async () => {
+    try {
+      setIsLoading(true);
+      const address = await Api("get", "/user/address/get");
+      console.log(address);
+      if (address?.success) {
+        setAddress(address?.address);
+        setSelectedAddress(address?.address[0]);
+      } else {
+        toast.error(address?.message);
+      }
+    } catch (error) {
+      toast.error(error?.message);
+      setIsLoading(false);
+    }
+  };
+
   const finalCart = useMemo(() => {
     return cartProduct.map((product) => ({
       ...product,
@@ -42,8 +66,6 @@ function page() {
       subtotal: product.offerPrice * (cartItems[product._id] || 0),
     }));
   }, [cartProduct, cartItems]);
-
-  // console.log("final cart-->", finalCart);
 
   // Calculate totals
   const totalPrice = useMemo(() => {
@@ -53,9 +75,9 @@ function page() {
   const tax = +(totalPrice * 0.02).toFixed(2);
   const grandTotal = totalPrice + tax;
 
-  // console.log("total price-->", grandTotal);
+  console.log("user add--->", selectedAddress);
 
-  if (isLoading) return <Loader />;
+  // if (isLoading) return <Loader />;
 
   return finalCart.length > 0 ? (
     <div className="  max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-32 mb-20">
@@ -138,21 +160,59 @@ function page() {
           <div className="mb-6">
             <p className="text-sm font-medium uppercase">Delivery Address</p>
             <div className="relative flex justify-between items-start mt-2">
-              <p className="text-gray-500">No address found</p>
+              {selectedAddress ? (
+                <div>
+                  <p className="font-medium">
+                    {selectedAddress.firstName} {selectedAddress.lastName}
+                  </p>
+                  <p className="text-gray-600">
+                    {selectedAddress.street}, {selectedAddress.city}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-gray-500">No address found</p>
+              )}
               <button
                 onClick={() => setShowAddress(!showAddress)}
                 className="text-primary hover:underline cursor-pointer"
               >
                 Change
               </button>
+
+              {/* Address List */}
               {showAddress && (
-                <div className="absolute top-12 py-1 bg-white border border-gray-300 text-sm w-full">
-                  <Link href={"/address"}>
-                    <p
-                      onClick={() => setShowAddress(false)}
-                      className="text-white bg-primary text-center cursor-pointer p-2  "
-                    >
-                      Add address
+                <div className="absolute z-10 mt-14 w-full bg-white border border-gray-300 shadow">
+                  {address.length > 0 ? (
+                    address.map((item) => (
+                      <div
+                        key={item._id}
+                        onClick={() => {
+                          setSelectedAddress(item);
+                          setShowAddress(false);
+                        }}
+                        className={`p-3 text-sm cursor-pointer border-b last:border-b-0
+              ${
+                selectedAddress?._id === item._id
+                  ? "bg-primary/10 border-l-4 border-primary"
+                  : "hover:bg-gray-100"
+              }
+            `}
+                      >
+                        <p className="font-medium">
+                          {item.firstName} {item.lastName}
+                        </p>
+                        <p className="text-gray-600">
+                          {item.street}, {item.city}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="p-3 text-gray-500">No address found</p>
+                  )}
+
+                  <Link href="/address">
+                    <p className="text-center bg-primary text-white p-2 cursor-pointer">
+                      + Add New Address
                     </p>
                   </Link>
                 </div>
@@ -174,7 +234,7 @@ function page() {
           <div className="text-gray-500 mt-4 space-y-2">
             <p className="flex justify-between">
               <span>Price</span>
-              <span>$20</span>
+              <span>${totalPrice}</span>
             </p>
             <p className="flex justify-between">
               <span>Shipping Fee</span>
@@ -182,11 +242,11 @@ function page() {
             </p>
             <p className="flex justify-between">
               <span>Tax (2%)</span>
-              <span>$20</span>
+              <span>${grandTotal}</span>
             </p>
             <p className="flex justify-between text-lg font-medium mt-3">
               <span>Total Amount:</span>
-              <span>$20</span>
+              <span>${grandTotal}</span>
             </p>
           </div>
 
