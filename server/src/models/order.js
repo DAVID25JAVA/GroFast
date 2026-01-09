@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema(
     ],
 
     amount: {
-      type: Number,
+      type: String,
       required: true,
     },
     address: {
@@ -36,7 +36,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentType: {
       type: String,
-      required: true,
+      // required: true,
     },
     isPaid: {
       type: Boolean,

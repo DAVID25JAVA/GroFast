@@ -4,30 +4,30 @@ import productModel from "../models/product.js";
 export const placeOrderCOD = async (req, res) => {
   try {
     const { userId, items, address } = req.body;
-    if (!userId && items?.length == 0) {
+    if (!userId || !items || items.length === 0) {
       return res.json({ success: false, message: "Invalid Data" });
     }
-
-    //   calculate Amount
-    let amount = await items.reduce(async (acc, item) => {
-      const product = await productModel.findById(item?.product);
-      return (await acc) + product * item?.quantity;
-    }, 0);
-
-    // Add Tax -->2%
+    let amount = 0;
+    for (const item of items) {
+      const product = await productModel.findById(item.product);
+      if (!product) {
+        return res.json({ success: false, message: "Product not found" });
+      }
+      amount += product.price * item.quantity;
+    }
+    // Add 2% tax
     amount += Math.floor(amount * 0.02);
-
     await orderModel.create({
       userId,
       items,
       amount,
       address,
-      pymentType: "COD",
+      paymentType: "COD",
     });
     return res.json({ success: true, message: "Order placed successfully" });
   } catch (error) {
-    console.log("Order error--->", error?.message);
-    return res.json({ success: false, message: error?.message });
+    console.log("Order error--->", error.message);
+    return res.json({ success: false, message: error.message });
   }
 };
 

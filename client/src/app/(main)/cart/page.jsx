@@ -9,14 +9,17 @@ import Loader from "@/components/UI/Loader";
 import Image from "next/image";
 import { assets } from "../../../../public/assets";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 function page() {
   const [showAddress, setShowAddress] = useState(false);
-  const { cartItems, updateQuantity } = useCart();
+  const { cartItems, updateQuantity, setCartItems } = useCart();
   const { isLoading, setIsLoading, user } = useUser();
   const [cartProduct, setCartProduct] = useState([]);
   const [address, setAddress] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [paymentOption, setPaymentOption] = useState("COD");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCartProduct = async () => {
@@ -75,9 +78,43 @@ function page() {
   const tax = +(totalPrice * 0.02).toFixed(2);
   const grandTotal = totalPrice + tax;
 
-  console.log("user add--->", selectedAddress);
+  // console.log("user add--->", selectedAddress);
+  console.log("final cart-->", finalCart);
 
   // if (isLoading) return <Loader />;
+
+  // Place order API
+  const PlaceOrder = async () => {
+    try {
+      if (!selectedAddress)
+        return toast.error("Please select your address first");
+      if (paymentOption == "COD") {
+        setIsLoading(true);
+        const res = await Api("post", "/order/cod", {
+          userId: user?._id,
+          items: finalCart?.map((item) => ({
+            product: item?._id,
+            quantity: item?.quantity,
+          })),
+          address: selectedAddress?._id,
+        });
+        console.log("order--->", res);
+
+        if (res.success) {
+          setIsLoading(false);
+          toast.success(res?.message);
+          setCartItems({});
+          
+          // router.push("/my-order")
+        } else {
+          toast.error(res?.message);
+        }
+      }
+    } catch (error) {
+      toast.error(error?.message);
+      setIsLoading(false);
+    }
+  };
 
   return finalCart.length > 0 ? (
     <div className="  max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-32 mb-20">
@@ -130,7 +167,9 @@ function page() {
               </div>
 
               {/* Subtotal */}
-              <p className="text-center">${grandTotal}</p>
+              <p className="text-center">
+                ${product?.offerPrice * product?.quantity}
+              </p>
 
               <button
                 onClick={() =>
@@ -250,7 +289,10 @@ function page() {
             </p>
           </div>
 
-          <button className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium transition">
+          <button
+            onClick={PlaceOrder}
+            className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium transition"
+          >
             Place Order
           </button>
         </div>
