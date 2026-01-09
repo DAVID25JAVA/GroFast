@@ -25,7 +25,10 @@ function page() {
     const fetchCartProduct = async () => {
       try {
         const ids = Object.keys(cartItems);
-        if (!ids.length) return;
+        if (!ids.length) {
+          setCartProduct([]);  
+          return;
+        }
         setIsLoading(true);
         const data = await Api("get", `/cart/product?ids=${ids?.join(",")}`);
         if (data?.success) {
@@ -39,7 +42,7 @@ function page() {
     };
 
     fetchCartProduct();
-  }, [cartItems, updateQuantity]);
+  }, [cartItems]);
 
   useEffect(() => {
     fetchAddress();
@@ -62,15 +65,18 @@ function page() {
     }
   };
 
+  // Final cart
   const finalCart = useMemo(() => {
-    return cartProduct.map((product) => ({
-      ...product,
-      quantity: cartItems[product?._id] || 0,
-      subtotal: product.offerPrice * (cartItems[product._id] || 0),
-    }));
+    return cartProduct
+      .map((product) => ({
+        ...product,
+        quantity: cartItems[product._id] || 0,
+        subtotal: product.offerPrice * (cartItems[product._id] || 0),
+      }))
+      .filter((item) => item.quantity > 0) 
   }, [cartProduct, cartItems]);
 
-  // Calculate totals
+  // Totals
   const totalPrice = useMemo(() => {
     return finalCart.reduce((sum, item) => sum + item.subtotal, 0);
   }, [finalCart]);
@@ -98,16 +104,17 @@ function page() {
           })),
           address: selectedAddress?._id,
         });
-        console.log("order--->", res);
+     
 
         if (res.success) {
           setIsLoading(false);
-          toast.success(res?.message);
           setCartItems({});
-          
-          // router.push("/my-order")
+           setCartProduct([]);
+          toast.success(res?.message);
+          router.push("/my-order")
         } else {
           toast.error(res?.message);
+          setIsLoading(false);
         }
       }
     } catch (error) {
