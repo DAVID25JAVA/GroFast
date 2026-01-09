@@ -34,7 +34,7 @@ export const placeOrderCOD = async (req, res) => {
 // Get Order by UserId
 export const getOrderByUserId = async (req, res) => {
   try {
-    const { userId } = req.body;
+     const userId = req.user.id;
     const orderData = await orderModel
       .find({
         userId,
