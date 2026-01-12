@@ -27,9 +27,9 @@ server.use(express.json());
 server.use(cookieParser());
 server.use(cors({ origin: allowOrigin, credentials: true }));
 
-server.use((req, res) => {
-  res.send("API is working fine.........");
-});
+// server.use((req, res) => {
+//   res.send("API is working fine.........");
+// });
 
 // user API
 server.use("/api/user", userRouter);

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import { useUser } from "@/context/userContext";
 import { Api } from "../API/Api";
+import toast from "react-hot-toast";
 
 function BestSellers() {
   const { setIsLoading, isLoading } = useUser();
