@@ -1,7 +1,28 @@
-import React from "react";
+"use client";
+import { useEffect, useState } from "react";
 import { dummyOrders } from "../../../../public/assets";
+import toast from "react-hot-toast";
+import { useUser } from "@/context/userContext";
+import { Api } from "@/components/API/Api";
 
 function page() {
+  const [orderData, setOrderData] = useState([]);
+  const { isLoading, setIsLoading } = useUser();
+
+  useEffect(() => {
+    fetchOrder()
+  },[])
+
+  const fetchOrder = async () => {
+    try {
+      setIsLoading(true);
+      const res = await Api("get", "/order/allorders");
+      console.log("orders res--->", res);
+    } catch (error) {
+      toast(error?.message);
+    }
+  };
+
   return (
     <div>
       <div className="md:p-10 p-4 space-y-4">

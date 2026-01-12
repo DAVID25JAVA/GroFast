@@ -1,13 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Button } from "@/components/UI/button";
 import { UploadCloud, X } from "lucide-react";
 import { useUser } from "@/context/userContext";
 import { Api } from "@/components/API/Api";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 function Page() {
-  const { setIsLoading } = useUser();
+  const { setIsLoading, setIsSeller, isSeller } = useUser();
+  const router = useRouter();
 
   // 4 image slots
   const [images, setImages] = useState([null, null, null, null]);
@@ -18,6 +19,10 @@ function Page() {
     price: "",
     offerPrice: "",
   });
+
+  useEffect(() => {
+    if (!isSeller) return router.push("/seller/login");
+  }, []);
 
   // image upload per slot
   const handleImageChange = (e, index) => {
@@ -85,7 +90,6 @@ function Page() {
 
       const res = await Api("post", "/product/add", formData);
       console.log("res-->", res);
-      
 
       if (res.success) {
         toast.success(res.message);
@@ -156,9 +160,7 @@ function Page() {
           type="text"
           placeholder="Product Name"
           value={product.tittle}
-          onChange={(e) =>
-            setProduct({ ...product, tittle: e.target.value })
-          }
+          onChange={(e) => setProduct({ ...product, tittle: e.target.value })}
           className="border rounded px-3 py-2 w-full"
           required
         />
@@ -177,9 +179,7 @@ function Page() {
         {/* Category */}
         <select
           value={product.category}
-          onChange={(e) =>
-            setProduct({ ...product, category: e.target.value })
-          }
+          onChange={(e) => setProduct({ ...product, category: e.target.value })}
           className="border rounded px-3 py-2 w-full"
           required
         >
@@ -196,9 +196,7 @@ function Page() {
             type="number"
             placeholder="Price"
             value={product.price}
-            onChange={(e) =>
-              setProduct({ ...product, price: e.target.value })
-            }
+            onChange={(e) => setProduct({ ...product, price: e.target.value })}
             className="border rounded px-3 py-2 w-full"
             required
           />
@@ -217,7 +215,12 @@ function Page() {
         {/* <Button type="submit" className="bg-primary text-white w-full">
           Add Product
         </Button> */}
-        <button className="bg-primary text-base cursor-pointer text-white px-5 py-2 rounded-md" type="submit">Add Product</button>
+        <button
+          className="bg-primary text-base cursor-pointer text-white px-5 py-2 rounded-md"
+          type="submit"
+        >
+          Add Product
+        </button>
       </form>
     </div>
   );

@@ -36,7 +36,12 @@ export function UserProvider({ children }) {
   const isSellerStatus = async () => {
     try {
       const res = await Api("get", "/seller/is-auth");
-      if (res?.success) setIsSeller(true);
+      if (res?.success) {
+        setIsSeller(true)
+      } else {
+        setIsSeller(false);
+        toast.error(res?.message)
+      };
     } catch {
       setIsSeller(false);
     }
@@ -91,6 +96,7 @@ export function UserProvider({ children }) {
         setIsForm,
         setIsUser,
         isSeller,
+        setIsSeller,
         isLoading,
         setIsLoading,
         setUser,

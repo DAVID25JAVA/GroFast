@@ -26,7 +26,7 @@ function page() {
       try {
         const ids = Object.keys(cartItems);
         if (!ids.length) {
-          setCartProduct([]);  
+          setCartProduct([]);
           return;
         }
         setIsLoading(true);
@@ -73,7 +73,7 @@ function page() {
         quantity: cartItems[product._id] || 0,
         subtotal: product.offerPrice * (cartItems[product._id] || 0),
       }))
-      .filter((item) => item.quantity > 0) 
+      .filter((item) => item.quantity > 0);
   }, [cartProduct, cartItems]);
 
   // Totals
@@ -85,7 +85,7 @@ function page() {
   const grandTotal = totalPrice + tax;
 
   // console.log("user add--->", selectedAddress);
-  console.log("final cart-->", finalCart);
+  // console.log("final cart-->", finalCart);
 
   // if (isLoading) return <Loader />;
 
@@ -104,14 +104,36 @@ function page() {
           })),
           address: selectedAddress?._id,
         });
-     
-
         if (res.success) {
           setIsLoading(false);
           setCartItems({});
-           setCartProduct([]);
+          setCartProduct([]);
           toast.success(res?.message);
-          router.push("/my-order")
+          router.push("/my-order");
+        } else {
+          toast.error(res?.message);
+          setIsLoading(false);
+        }
+      } else {
+        // when online payment then call its API
+        setIsLoading(true);
+        const res = await Api("post", "/order/stripe", {
+          userId: user?._id,
+          items: finalCart?.map((item) => ({
+            product: item?._id,
+            quantity: item?.quantity,
+          })),
+          address: selectedAddress?._id,
+        });
+        console.log("stripe API res--->", res);
+
+        if (res.success) {
+          window.location.replace(res?.url);
+          // setIsLoading(false);
+          // setCartItems({});
+          //  setCartProduct([]);
+          // toast.success(res?.message);
+          // router.push("/my-order")
         } else {
           toast.error(res?.message);
           setIsLoading(false);
@@ -122,6 +144,8 @@ function page() {
       setIsLoading(false);
     }
   };
+
+  console.log("payment option---->", paymentOption);
 
   return finalCart.length > 0 ? (
     <div className="  max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-32 mb-20">
@@ -267,7 +291,11 @@ function page() {
 
             <p className="text-sm font-medium uppercase mt-6">Payment Method</p>
 
-            <select className="w-full border border-gray-300 bg-white px-3 py-2 mt-2 outline-none">
+            <select
+              value={paymentOption}
+              onChange={(e) => setPaymentOption(e.target.value)}
+              className="w-full border border-gray-300 bg-white px-3 py-2 mt-2 outline-none"
+            >
               <option value="COD" className="">
                 Cash On Delivery
               </option>
