@@ -1,6 +1,7 @@
 import orderModel from "../models/order.js";
 import productModel from "../models/product.js";
 import Stripe from "stripe";
+import User from "../models/user.js";
 
 export const placeOrderCOD = async (req, res) => {
   try {
@@ -140,7 +141,6 @@ export const getAllOrder = async (req, res) => {
 //   }
 // };
 
-
 const TAX_RATE = 0.02; // 2%
 
 export const placeOrderWithStripe = async (req, res) => {
@@ -215,4 +215,57 @@ export const placeOrderWithStripe = async (req, res) => {
     console.log("Order error --->", error.message);
     return res.json({ success: false, message: error.message });
   }
+};
+
+export const stripeWebhook = async (req, res) => {
+  const stripewebhook = new Stripe(process.env.STRIPE_SECRET_KEY);
+  const sign = req.headers["stripe-signature"];
+  let event;
+  try {
+    event = stripewebhook.webhooks.constructEvent(
+      req.body,
+      sign,
+      process.env.STRIPE_SECRET_KEY
+    );
+  } catch (error) {
+    console.log("Web hook error:", error?.message);
+  }
+
+  switch (event.type) {
+    case "payment_intent.succeeded": {
+      const paymentIntent = event.data.object;
+      const paymentIntentId = paymentIntent.id;
+
+      // getting session metadeta
+      const session = await stripewebhook.checkout.sessions.list({
+        payment_intent: paymentIntentId,
+      });
+
+      const { orderId, userId } = session.data[0].metadata;
+      // mark payment ass paid
+      await orderModel.findByIdAndUpdate(orderId, { isPaid: true });
+      // clear user cart
+      await User.findByIdAndUpdate(userId, { cartItems: {} });
+      break;
+    }
+
+    case "payment_intent.payment_failed": {
+      const paymentIntent = event.data.object;
+      const paymentIntentId = paymentIntent.id;
+
+      // getting session metadeta
+      const session = await stripewebhook.checkout.sessions.list({
+        payment_intent: paymentIntentId,
+      });
+
+      const { orderId } = session.data[0].metadata;
+      await orderModel.findByIdAndDelete(orderId);
+      break;
+    }
+
+    default:
+      console.log("Unhandled event type", event.type);
+      break;
+  }
+  res.json({ received: true });
 };

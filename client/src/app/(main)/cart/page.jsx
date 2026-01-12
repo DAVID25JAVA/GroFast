@@ -129,9 +129,9 @@ function page() {
 
         if (res.success) {
           window.location.replace(res?.url);
-          // setIsLoading(false);
-          // setCartItems({});
-          //  setCartProduct([]);
+          setIsLoading(false);
+          setCartItems({});
+           setCartProduct([]);
           // toast.success(res?.message);
           // router.push("/my-order")
         } else {

@@ -10,11 +10,14 @@ import productRouter from "./src/routes/product.js";
 import cartRouter from "./src/routes/cart.js";
 import addressRouter from "./src/routes/userAddress.js";
 import orderRouter from "./src/routes/order.js";
+import { stripeWebhook } from "./src/controllers/order.js";
 
 const server = express();
 
 await connectDB();
 await connectCloudinary();
+
+server.post("/stripe", express.raw({type:"application/json"}), stripeWebhook)
 
 // Allow multiple origin
 const allowOrigin = ["http://localhost:3000"];
