@@ -103,14 +103,14 @@ function Header() {
               </div>
 
               {/* Cart icon */}
-              <div className="relative cursor-pointer pt-2">
-                <Link href={"/cart"}>
+              <Link href={"/cart"}>
+                <div className="relative cursor-pointer pt-2">
                   <ShoppingCart className="" />
-                </Link>
-                <div className="absolute w-4 h-4 bg-green-500 rounded-full text-center top-1 text-white -right-2 text-xs">
-                  {cartQunatity || 0}
+                  <div className="absolute w-4 h-4 bg-green-500 rounded-full text-center top-1 text-white -right-2 text-xs">
+                    {cartQunatity || 0}
+                  </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Login Button for large screen */}
               <div className="">
@@ -143,7 +143,7 @@ function Header() {
                   <>
                     <button
                       onClick={() => setIsForm(true)}
-                      className="bg-primary text-white px-5 py-2 rounded-md"
+                      className="bg-primary text-white px-5 py-2 hidden md:block rounded-md"
                     >
                       {" "}
                       Login

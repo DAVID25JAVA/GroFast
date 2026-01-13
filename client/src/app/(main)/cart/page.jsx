@@ -10,6 +10,7 @@ import Image from "next/image";
 import { assets } from "../../../../public/assets";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Spinner from "@/components/UI/Spinner";
 
 function page() {
   const [showAddress, setShowAddress] = useState(false);
@@ -20,6 +21,7 @@ function page() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentOption, setPaymentOption] = useState("COD");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCartProduct = async () => {
@@ -84,9 +86,6 @@ function page() {
   const tax = +(totalPrice * 0.02).toFixed(2);
   const grandTotal = totalPrice + tax;
 
-  // console.log("user add--->", selectedAddress);
-  // console.log("final cart-->", finalCart);
-
   // if (isLoading) return <Loader />;
 
   // Place order API
@@ -95,7 +94,7 @@ function page() {
       if (!selectedAddress)
         return toast.error("Please select your address first");
       if (paymentOption == "COD") {
-        setIsLoading(true);
+        setLoading(true);
         const res = await Api("post", "/order/cod", {
           userId: user?._id,
           items: finalCart?.map((item) => ({
@@ -105,18 +104,18 @@ function page() {
           address: selectedAddress?._id,
         });
         if (res.success) {
-          setIsLoading(false);
+          setLoading(false);
           setCartItems({});
           setCartProduct([]);
           toast.success(res?.message);
           router.push("/my-order");
         } else {
           toast.error(res?.message);
-          setIsLoading(false);
+          setLoading(false);
         }
       } else {
         // when online payment then call its API
-        setIsLoading(true);
+        setLoading(true);
         const res = await Api("post", "/order/stripe", {
           userId: user?._id,
           items: finalCart?.map((item) => ({
@@ -129,23 +128,21 @@ function page() {
 
         if (res.success) {
           window.location.replace(res?.url);
-          setIsLoading(false);
+          setLoading(false);
           setCartItems({});
-           setCartProduct([]);
-          // toast.success(res?.message);
-          // router.push("/my-order")
+          setCartProduct([]);
         } else {
           toast.error(res?.message);
-          setIsLoading(false);
+          setLoading(false);
         }
       }
     } catch (error) {
       toast.error(error?.message);
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  console.log("payment option---->", paymentOption);
+  // console.log("payment option---->", paymentOption);
 
   return finalCart.length > 0 ? (
     <div className="  max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-32 mb-20">
@@ -326,19 +323,20 @@ function page() {
 
           <button
             onClick={PlaceOrder}
+            disabled={loading}
             className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium transition"
           >
-            Place Order
+            {loading ? <Spinner /> : "Place Order"}
           </button>
         </div>
       </div>
     </div>
   ) : (
-    <div className="h-screen flex justify-center items-center flex-col">
-      <p className="text-lg sm:text-xl md:text-3xl text-red-500 font-bold">
+    <div className="md:h-screen h-1/2 py-20 sm:py-0 flex justify-center items-center flex-col">
+      <p className="text-lg sm:text-xl md:text-3xl text-red-500 font-bold text-center">
         {" "}
         <Image alt="cart" src={assets?.cart} width={300} className="" />
-        Your cart is empty !
+        <span>Your cart is empty !</span>
       </p>
       <Link href={"/products"}>
         <button className="bg-primary px-5 py-2 rounded-md text-white mt-10 cursor-pointer">

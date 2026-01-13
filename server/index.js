@@ -11,6 +11,7 @@ import cartRouter from "./src/routes/cart.js";
 import addressRouter from "./src/routes/userAddress.js";
 import orderRouter from "./src/routes/order.js";
 import { stripeWebhook } from "./src/controllers/order.js";
+import contactRouter from "./src/routes/contact.js";
 
 const server = express();
 
@@ -38,6 +39,7 @@ server.use("/api/product", productRouter);
 server.use("/api/cart", cartRouter);
 server.use("/api/user/address", addressRouter);
 server.use("/api/order", orderRouter);
+server.use("/api/contact", contactRouter);
 
 const PORT = process?.env?.PORT || 5000;
 server.listen(PORT, () => {

@@ -12,9 +12,9 @@ function page() {
         intention, emotion and style.
       </p>
       <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 px-4 md:px-0 py-10">
-        <div className="size-[520px] rounded-full absolute blur-[300px] -z-10 bg-[#FBFFE1]"></div>
+        <div className="md:size-[520px] rounded-full absolute blur-[300px] -z-10 bg-[#FBFFE1]"></div>
         <img
-          className="max-w-sm w-full rounded-xl h-auto"
+          className="max-w-sm  w-full rounded-xl h-auto"
           src={assets?.about?.src}
           alt="grocery image"
         />
