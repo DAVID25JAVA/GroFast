@@ -4,6 +4,7 @@ import {
   deleteProduct,
   getProduct,
   getProductById,
+  productByCategory,
   updateStock,
 } from "../controllers/product.js";
 import { isSellerAuth } from "../controllers/seller.js";
@@ -17,5 +18,6 @@ productRouter.get("/get", getProduct);
 productRouter.get("/delete", isSellerAuth, deleteProduct);
 productRouter.get("/:id", getProductById);
 productRouter.post("/update-stock", sellerAuth, updateStock);
+productRouter.get("/category/:category", productByCategory)
 
 export default productRouter;

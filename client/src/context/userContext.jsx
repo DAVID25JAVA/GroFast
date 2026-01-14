@@ -16,6 +16,7 @@ export function UserProvider({ children }) {
   const [isUser, setIsUser] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true); // ✅ FIX
   const [isForm, setIsForm] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -24,24 +25,26 @@ export function UserProvider({ children }) {
   // 🔒 Prevent API call on first cart load
   const isFirstRender = useRef(true);
 
+  // ✅ CHECK AUTH ONLY ONCE (on refresh)
   useEffect(() => {
-    isSellerStatus();
-    // isUserStatus();
+    checkAuthStatus();
   }, []);
 
-  useEffect(() => {
-    isUserStatus();
-  }, [isUser]);
+  const checkAuthStatus = async () => {
+    try {
+      await Promise.all([
+        isSellerStatus(),
+        isUserStatus(),
+      ]);
+    } finally {
+      setAuthLoading(false); // ✅ VERY IMPORTANT
+    }
+  };
 
   const isSellerStatus = async () => {
     try {
       const res = await Api("get", "/seller/is-auth");
-      if (res?.success) {
-        setIsSeller(true)
-      } else {
-        setIsSeller(false);
-        toast.error(res?.message)
-      };
+      setIsSeller(!!res?.success);
     } catch {
       setIsSeller(false);
     }
@@ -50,18 +53,21 @@ export function UserProvider({ children }) {
   const isUserStatus = async () => {
     try {
       const res = await Api("get", "/user/is-auth");
-      console.log(res);
       if (res?.success) {
         setIsUser(true);
         setUser(res.user);
         setCartItems(res.user.cartItems || {});
+      } else {
+        setIsUser(false);
+        setUser(null);
       }
-    } catch (error) {
-      console.log(error?.message);
+    } catch {
+      setIsUser(false);
+      setUser(null);
     }
   };
 
-  //  Sync cart ONLY when user changes cart
+  // 🛒 Sync cart ONLY when user changes cart
   useEffect(() => {
     if (!user) return;
 
@@ -93,14 +99,15 @@ export function UserProvider({ children }) {
       value={{
         isForm,
         isUser,
+        isSeller,
+        authLoading, // ✅ export
         setIsForm,
         setIsUser,
-        isSeller,
         setIsSeller,
         isLoading,
         setIsLoading,
         setUser,
-        user
+        user,
       }}
     >
       {children}

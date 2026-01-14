@@ -67,7 +67,7 @@ export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
     // console.log("product id-->", id);
-    
+
     const data = await productModel.findById(id);
     return res.json({ success: true, data });
   } catch (error) {
@@ -111,5 +111,18 @@ export const deleteProduct = async (req, res) => {
   } catch (error) {
     console.log("Delete product error---->", error?.message);
     return res.json({ success: false, message: error.message });
+  }
+};
+
+// Get product by category
+export const productByCategory = async (req, res) => {
+  const { category } = req.params;
+  try {
+    const products = await productModel.find({ category });
+
+    res.status(200).json({ success: true, products });
+  } catch (error) {
+    console.log("Get product by category error:", error.message);
+    res.status(500).json({ message: "Server error" });
   }
 };

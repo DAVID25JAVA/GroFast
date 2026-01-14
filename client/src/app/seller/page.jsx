@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 function Page() {
-  const { setIsLoading, setIsSeller, isSeller } = useUser();
+  const { setIsLoading, setIsSeller, isSeller, authLoading  } = useUser();
   const router = useRouter();
 
   // 4 image slots
@@ -21,8 +21,9 @@ function Page() {
   });
 
   useEffect(() => {
+    if (authLoading) return;
     if (!isSeller) return router.push("/seller/login");
-  }, []);
+  }, [isSeller, authLoading]);
 
   // image upload per slot
   const handleImageChange = (e, index) => {

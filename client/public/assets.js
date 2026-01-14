@@ -69,8 +69,8 @@ import vanilla_muffins_image from "./vanilla_muffins_image.png";
 import quinoa_image from "./quinoa_image.png";
 import brown_rice_image from "./brown_rice_image.png";
 import barley_image from "./barley_image.png";
-import about from './about.jpg';
-import cart from './cart.png'
+import about from "./about.jpg";
+import cart from "./cart.png";
 
 export const assets = {
   logo,
@@ -153,11 +153,10 @@ export const footerLinks = [
   {
     title: "Quick Links",
     links: [
-      { text: "Home", url: "#" },
-      { text: "Best Sellers", url: "#" },
-      { text: "Offers & Deals", url: "#" },
-      { text: "Contact Us", url: "#" },
-      { text: "FAQs", url: "#" },
+      { text: "Home", url: "/" },
+      { text: "Product", url: "/products" },
+      { text: "Contact", url: "/contact" },
+      { text: "About", url: "/about" },
     ],
   },
   {
@@ -173,10 +172,9 @@ export const footerLinks = [
   {
     title: "Follow Us",
     links: [
-      { text: "Instagram", url: "#" },
-      { text: "Twitter", url: "#" },
-      { text: "Facebook", url: "#" },
-      { text: "YouTube", url: "#" },
+      { text: "LinkedIn", url: "https://www.linkedin.com/in/david-pal-ba6a72246/" },
+      { text: "GitHub", url: "https://github.com/DAVID25JAVA" },
+      { text: "Website", url: "https://david-portfolio-o7yw.vercel.app/" },
     ],
   },
 ];
@@ -868,62 +866,59 @@ export const groceryFAQs = [
     id: 1,
     question: "What is this grocery app?",
     answer:
-      "This app allows you to order groceries online and get them delivered to your doorstep in minutes."
+      "This app allows you to order groceries online and get them delivered to your doorstep in minutes.",
   },
   {
     id: 2,
     question: "How fast is the delivery?",
     answer:
-      "We offer ultra-fast delivery, usually within 10–20 minutes depending on your location."
+      "We offer ultra-fast delivery, usually within 10–20 minutes depending on your location.",
   },
   {
     id: 3,
     question: "What products can I order?",
     answer:
-      "You can order fruits, vegetables, dairy, snacks, beverages, household essentials, and more."
+      "You can order fruits, vegetables, dairy, snacks, beverages, household essentials, and more.",
   },
   {
     id: 4,
     question: "Is there a minimum order value?",
     answer:
-      "Yes, a minimum order value may apply based on your delivery location."
+      "Yes, a minimum order value may apply based on your delivery location.",
   },
   {
     id: 5,
     question: "Are the products fresh?",
     answer:
-      "Yes, all products are sourced daily to ensure freshness and quality."
+      "Yes, all products are sourced daily to ensure freshness and quality.",
   },
   {
     id: 6,
     question: "What payment methods are accepted?",
     answer:
-      "We accept UPI, credit/debit cards, net banking, and cash on delivery."
+      "We accept UPI, credit/debit cards, net banking, and cash on delivery.",
   },
   {
     id: 7,
     question: "Can I track my order?",
     answer:
-      "Yes, you can track your order in real time from the app after placing it."
+      "Yes, you can track your order in real time from the app after placing it.",
   },
   {
     id: 8,
     question: "What if an item is missing or damaged?",
     answer:
-      "You can raise a complaint through the app, and we will provide a refund or replacement."
+      "You can raise a complaint through the app, and we will provide a refund or replacement.",
   },
   {
     id: 9,
     question: "Do you offer refunds?",
     answer:
-      "Yes, refunds are processed quickly for eligible items as per our refund policy."
+      "Yes, refunds are processed quickly for eligible items as per our refund policy.",
   },
   {
     id: 10,
     question: "Which locations do you serve?",
-    answer:
-      "We currently serve selected cities and are expanding rapidly."
-  }
+    answer: "We currently serve selected cities and are expanding rapidly.",
+  },
 ];
-
-

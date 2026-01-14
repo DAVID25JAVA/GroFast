@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 function Category() {
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
       <div className="my-20">

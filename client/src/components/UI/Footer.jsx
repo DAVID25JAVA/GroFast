@@ -15,9 +15,9 @@ function Footer() {
                 alt="dummyLogoColored"
               />
               <p className="max-w-[410px] mt-6">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum
-                unde quaerat eveniet cumque accusamus atque qui error quo enim
-                fugiat?
+                greenCart makes your shopping faster, easier, and smarter.
+                Discover fresh products, exclusive deals, and seamless delivery
+                right at your doorstep.
               </p>
             </div>
             <div className="flex flex-wrap justify-between w-full md:w-[45%] gap-5">
@@ -28,7 +28,7 @@ function Footer() {
                   </h3>
                   <div className="text-sm space-y-1">
                     {section.links.map((link, i) => (
-                      <Link href={link?.url} key={i} className="flex">
+                      <Link href={link?.url} key={i} className="flex" target="blank">
                         {link?.text}
                       </Link>
                     ))}
@@ -38,8 +38,11 @@ function Footer() {
             </div>
           </div>
           <p className="py-4 text-center text-sm md:text-base text-gray-500/80">
-            Copyright 2025 © <a target="blank" href="https://david-portfolio-o7yw.vercel.app/">David.dev</a> All
-            Right Reserved.
+            Copyright 2025 ©{" "}
+            <a className="text-primary underline" target="blank" href="https://david-portfolio-o7yw.vercel.app/">
+              David.dev
+            </a>{" "}
+            All Right Reserved.
           </p>
         </div>
       </div>
