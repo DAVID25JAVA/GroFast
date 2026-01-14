@@ -5,6 +5,7 @@ import {
   getProduct,
   getProductById,
   productByCategory,
+  SearchProduct,
   updateStock,
 } from "../controllers/product.js";
 import { isSellerAuth } from "../controllers/seller.js";
@@ -16,6 +17,7 @@ const productRouter = express.Router();
 productRouter.post("/add", upload.array("images", 4), addProduct);
 productRouter.get("/get", getProduct);
 productRouter.get("/delete", isSellerAuth, deleteProduct);
+productRouter.get("/search", SearchProduct)
 productRouter.get("/:id", getProductById);
 productRouter.post("/update-stock", sellerAuth, updateStock);
 productRouter.get("/category/:category", productByCategory)

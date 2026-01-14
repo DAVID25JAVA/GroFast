@@ -126,3 +126,35 @@ export const productByCategory = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Search product API
+export const SearchProduct = async (req, res) => {
+  const searchText = req.query.searchText;
+  try {
+    const searchQuery = {
+      tittle: { $regex: searchText.trim(), $options: "i" },
+    };
+     
+    const products = await productModel.find(searchQuery);
+    
+    if (products.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No products found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Products found successfully",
+      products: products,
+    });
+  } catch (error) {
+    console.error("Search error:", error?.message);
+    return res.status(500).json({
+      success: false,
+      message: "Error searching products",
+      error: error.message,
+    });
+  }
+};
