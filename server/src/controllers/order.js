@@ -58,7 +58,7 @@ export const getAllOrder = async (req, res) => {
   try {
     const allorder = await orderModel
       .find({
-        $or: [{ paymentTeype: "COD", isPaid: true }],
+        $or: [{ paymentType: "COD", isPaid: true }],
       })
       .populate("items.product address")
       .sort({ createdAt: -1 });

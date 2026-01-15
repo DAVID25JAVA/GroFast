@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { Api } from "@/components/API/Api";
 import { useUser } from "@/context/userContext";
 import Loader from "@/components/UI/Loader";
+import Link from "next/link";
+import { MoveLeft} from "lucide-react";
 
 function page() {
   const { id } = useParams();
@@ -39,21 +41,32 @@ function page() {
     return (
       <>
         {products.length == 0 && (
-          <div className="flex justify-center items-center md:h-screen h-96 ">
+          <div className="flex flex-col justify-center items-center md:h-screen h-96 ">
             <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-600">
               No product found in this category
             </p>
+            <Link href={"/"}>
+              <button className="text-white mt-5 cursor-pointer bg-primary px-4 py-2 rounded-md">
+                Back To Home
+              </button>
+            </Link>
           </div>
         )}
       </>
     );
   }
 
-  if(isLoading) return <Loader/>
+  if (isLoading) return <Loader />;
 
   return (
     <div className="h-screen py-28 max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
-      <p className="text-gray-700 font-semibold text-base sm:text-lg md:text-xl uppercase">
+      <Link href={"/"}>
+        <div className="text-white bg-primary w-36 text-center py-0.5 rounded-full text-xs flex items-center justify-center gap-0.5">
+          <MoveLeft />
+          <p>Back To Home</p>
+        </div>
+      </Link>
+      <p className="text-gray-700 font-semibold text-base pt-3 sm:text-lg md:text-xl uppercase">
         Filter By{" "}
         <span className="border-b-2 border-primary text-primary">
           {id.toUpperCase()}

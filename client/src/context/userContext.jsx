@@ -16,7 +16,7 @@ export function UserProvider({ children }) {
   const [isUser, setIsUser] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true); // ✅ FIX
+  const [authLoading, setAuthLoading] = useState(true); 
   const [isForm, setIsForm] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -25,7 +25,7 @@ export function UserProvider({ children }) {
   // 🔒 Prevent API call on first cart load
   const isFirstRender = useRef(true);
 
-  // ✅ CHECK AUTH ONLY ONCE (on refresh)
+  //  CHECK AUTH ONLY ONCE (on refresh)
   useEffect(() => {
     checkAuthStatus();
   }, []);
@@ -37,7 +37,7 @@ export function UserProvider({ children }) {
         isUserStatus(),
       ]);
     } finally {
-      setAuthLoading(false); // ✅ VERY IMPORTANT
+      setAuthLoading(false);  
     }
   };
 
@@ -67,7 +67,7 @@ export function UserProvider({ children }) {
     }
   };
 
-  // 🛒 Sync cart ONLY when user changes cart
+  //  Sync cart ONLY when user changes cart
   useEffect(() => {
     if (!user) return;
 
@@ -100,7 +100,7 @@ export function UserProvider({ children }) {
         isForm,
         isUser,
         isSeller,
-        authLoading, // ✅ export
+        authLoading,  
         setIsForm,
         setIsUser,
         setIsSeller,

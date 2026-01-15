@@ -5,10 +5,18 @@ import { useUser } from "@/context/userContext";
 import { Api } from "@/components/API/Api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/UI/Loader";
 
 function Page() {
-  const { setIsLoading, setIsSeller, isSeller, authLoading  } = useUser();
+  const {
+    setIsLoading,
+    isLoading,
+    setIsSeller,
+    isSeller,
+    authLoading,
+  } = useUser();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   // 4 image slots
   const [images, setImages] = useState([null, null, null, null]);
@@ -21,9 +29,30 @@ function Page() {
   });
 
   useEffect(() => {
+    let timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     if (authLoading) return;
     if (!isSeller) return router.push("/seller/login");
   }, [isSeller, authLoading]);
+
+  useEffect(() => {
+    return () => {
+      images.forEach((img) => img?.preview && URL.revokeObjectURL(img.preview));
+    };
+  }, [images]);
+
+  if (loading) {
+    return (
+      <Loader/>
+    )
+  }
+
 
   // image upload per slot
   const handleImageChange = (e, index) => {
@@ -50,13 +79,6 @@ function Page() {
       return updated;
     });
   };
-
-  // cleanup on unmount
-  useEffect(() => {
-    return () => {
-      images.forEach((img) => img?.preview && URL.revokeObjectURL(img.preview));
-    };
-  }, [images]);
 
   // submit
   const handleSubmit = async (e) => {

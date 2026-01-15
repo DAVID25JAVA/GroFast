@@ -4,40 +4,54 @@ import { dummyOrders } from "../../../../public/assets";
 import toast from "react-hot-toast";
 import { useUser } from "@/context/userContext";
 import { Api } from "@/components/API/Api";
+import moment from "moment";
+import Loader from "@/components/UI/Loader";
 
 function page() {
   const [orderData, setOrderData] = useState([]);
   const { isLoading, setIsLoading } = useUser();
 
   useEffect(() => {
-    fetchOrder()
-  },[])
+    fetchOrder();
+  }, []);
 
   const fetchOrder = async () => {
     try {
       setIsLoading(true);
       const res = await Api("get", "/order/allorders");
-      console.log("orders res--->", res);
+      if (res?.success) {
+        setIsLoading(false);
+        setOrderData(res?.allorder);
+      } else {
+        setIsLoading(false);
+        toast(res?.message);
+      }
     } catch (error) {
       toast(error?.message);
+      setIsLoading(false);
     }
   };
+
+   if(isLoading) return <Loader/>
 
   return (
     <div>
       <div className="md:p-10 p-4 space-y-4">
         <h2 className="text-lg font-medium">Orders List</h2>
-        {dummyOrders.map((order, index) => (
+        {orderData.map((order, index) => (
           <div
             key={index}
             className="flex flex-col md:grid md:grid-cols-[2fr_1fr_1fr_1fr] md:items-center gap-5 p-5 max-w-4xl rounded-md border border-gray-300 text-gray-800"
           >
             <div className="flex gap-5">
-              <img
-                className="w-12 h-12 object-cover opacity-60"
-                src={order?.items[0]?.product[0]?.src}
-                alt="boxIcon"
-              />
+              {order?.items?.map((img, index) => (
+                <img
+                  key={index}
+                  className="w-12 h-12 object-cover opacity-60"
+                  src={img?.product?.image[0]}
+                  alt="boxIcon"
+                />
+              ))}
               <>
                 {order.items.map((item, index) => (
                   <div key={index} className="flex flex-col justify-center">
@@ -62,7 +76,7 @@ function page() {
               </p>
               <p>
                 {order.address.street}, {order.address.city},{" "}
-                {order.address.state},{order.address.zipcode},{" "}
+                {order.address.state},{order.address.zipCode},{" "}
                 {order.address.country}
               </p>
             </div>
@@ -72,9 +86,21 @@ function page() {
             </p>
 
             <div className="flex flex-col text-sm">
-              <p>Method: {order.paymentType}</p>
-              <p>Date: {order.orderDate}</p>
-              <p>Payment: {order.isPaid ? "Paid" : "Pending"}</p>
+              <p>
+                Method:{" "}
+                <span className="text-green-500">{order.paymentType}</span>
+              </p>
+              <p>Date:{moment(order.orderDate).format("DD/MM/YYY")}</p>
+              <p>
+                Payment:{" "}
+                <span
+                  className={`${
+                    order?.isPaid ? "text-green-500" : "text-yellow-500"
+                  }`}
+                >
+                  {order.isPaid ? "Paid" : "Pending"}
+                </span>
+              </p>
             </div>
           </div>
         ))}
