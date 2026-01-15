@@ -5,7 +5,6 @@ import { SearchCheck, ShoppingCart, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Api } from "../API/Api";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 function Search() {

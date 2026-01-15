@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useCart } from "@/context/cartContext";
 import { useUser } from "@/context/userContext";
 import { Api } from "@/components/API/Api";
-import Loader from "@/components/UI/Loader";
 import Image from "next/image";
 import { assets } from "../../../../public/assets";
 import toast from "react-hot-toast";

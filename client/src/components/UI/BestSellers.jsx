@@ -1,5 +1,4 @@
 "use client";
-import { dummyProducts } from "../../../public/assets";
 import ProductCard from "./Card";
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
