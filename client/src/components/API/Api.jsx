@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 // const BackendURL = "http://localhost:4000/api";
-const BackendURL = "https://gro-fast-greencart.vercel.app";
+const BackendURL = "https://gro-fast-greencart.vercel.app/api";
 
 // Create axios instance
 const api = axios.create({

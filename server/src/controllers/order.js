@@ -6,6 +6,7 @@ import User from "../models/user.js";
 export const placeOrderCOD = async (req, res) => {
   try {
     const { userId, items, address } = req.body;
+    //  console.log("order Data--->", userId, items, address);
     if (!userId || !items || items.length === 0) {
       return res.json({ success: false, message: "Invalid Data" });
     }
@@ -146,6 +147,8 @@ const TAX_RATE = 0.02; // 2%
 export const placeOrderWithStripe = async (req, res) => {
   try {
     const { userId, items, address } = req.body;
+    // console.log("order Data--->", userId, items, address);
+
     const { origin } = req.headers;
     if (!userId || !items || items.length === 0) {
       return res.json({ success: false, message: "Invalid Data" });
