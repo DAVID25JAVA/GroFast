@@ -5,10 +5,12 @@ import React, { useState } from "react";
 import { Api } from "../API/Api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/cartContext";
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
   const router = useRouter();
+  const { refreshUserStatus } = useCart();
   const [signupForm, setSignupForm] = useState({
     name: "",
     email: "",
@@ -44,6 +46,7 @@ function Login() {
         toast.success(res?.message);
         setIsUser(true);
         setIsForm(false);
+        refreshUserStatus()
         router.push("/");
       } else {
         toast.error(res?.message);

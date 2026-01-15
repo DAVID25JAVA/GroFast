@@ -22,7 +22,7 @@ export function UserProvider({ children }) {
 
   const { cartItems, setCartItems } = useCart();
 
-  // 🔒 Prevent API call on first cart load
+  //  Prevent API call on first cart load
   const isFirstRender = useRef(true);
 
   //  CHECK AUTH ONLY ONCE (on refresh)

@@ -160,7 +160,7 @@ export const placeOrderWithStripe = async (req, res) => {
         return res.json({ success: false, message: "Product not found" });
       }
 
-      const price = product.offerPrice; // ✅ single source of truth
+      const price = product.offerPrice; //  single source of truth
       const itemTotal = price * item.quantity;
       amount += itemTotal;
       productData.push({
@@ -170,7 +170,7 @@ export const placeOrderWithStripe = async (req, res) => {
       });
     }
 
-    // ✅ Apply tax ONCE on total
+    // Apply tax ONCE on total
     const tax = Math.round(amount * TAX_RATE);
     const finalAmount = amount + tax;
 

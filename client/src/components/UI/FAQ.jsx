@@ -16,7 +16,7 @@ function FAQ() {
         Frequently Asked Questions
       </h1>
 
-      <div className="flex flex-col gap-5 mt-10">
+      <div className="flex flex-col md:gap-5 gap-2 mt-10">
         {groceryFAQs.map((item, id) => (
           <div key={id} className="bg-green-50 rounded-lg p-4">
             {/* Question */}
