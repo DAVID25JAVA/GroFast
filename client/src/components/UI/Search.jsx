@@ -38,7 +38,6 @@ function Search() {
       setIsLoading(true);
       setHasSearched(true);
       const res = await Api("get", `/product/search?searchText=${searchText}`);
-      console.log("res------>", res);
       if (res?.success) {
         setSearchProducts(res?.products || []);
         setIsLoading(false);

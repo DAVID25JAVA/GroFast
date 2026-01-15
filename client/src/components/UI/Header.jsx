@@ -30,9 +30,7 @@ function Header() {
     (items, qty) => items + qty,
     0
   );
-
-  // console.log("cart-->", cartItems);
-
+ 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);

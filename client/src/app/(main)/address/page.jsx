@@ -9,10 +9,7 @@ import toast from "react-hot-toast";
 
 function page() {
   const router = useRouter();
-  console.log(router);
-  
   const { setIsLoading, setUser, user } = useUser();
-  console.log(user);
   const [userAddress, setUserAddress] = useState({
     firstName: "",
     lastName: "",

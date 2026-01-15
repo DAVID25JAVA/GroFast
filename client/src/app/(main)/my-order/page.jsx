@@ -18,7 +18,6 @@ const page = () => {
     try {
       setIsLoading(true);
       const res = await Api("get", "/order/orderByUser",);
-      console.log("res-->", res);
       if (res.success) {
         setIsLoading(false);
         setOrders(res?.orderData)
@@ -33,62 +32,7 @@ const page = () => {
 
   if(isLoading) return <Loader/>
 
-  const boxIcon =
-    "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/e-commerce/boxIcon.svg";
-
-  const orders = [
-    {
-      id: 1,
-      items: [{ product: { name: "Nike Air Max 270" }, quantity: 1 }],
-      address: {
-        firstName: "John",
-        lastName: "Doe",
-        street: "123 Main St",
-        city: "New York",
-        state: "NY",
-        zipcode: "10001",
-        country: "USA",
-      },
-      amount: 320.0,
-      paymentType: "Credit Card",
-      orderDate: "10/10/2022",
-      isPaid: true,
-    },
-    {
-      id: 1,
-      items: [{ product: { name: "Nike Air Max 270" }, quantity: 1 }],
-      address: {
-        firstName: "John",
-        lastName: "Doe",
-        street: "123 Main St",
-        city: "New York",
-        state: "NY",
-        zipcode: "10001",
-        country: "USA",
-      },
-      amount: 320.0,
-      paymentType: "Credit Card",
-      orderDate: "10/10/2022",
-      isPaid: true,
-    },
-    {
-      id: 1,
-      items: [{ product: { name: "Nike Air Max 270" }, quantity: 1 }],
-      address: {
-        firstName: "John",
-        lastName: "Doe",
-        street: "123 Main St",
-        city: "New York",
-        state: "NY",
-        zipcode: "10001",
-        country: "USA",
-      },
-      amount: 320.0,
-      paymentType: "Credit Card",
-      orderDate: "10/10/2022",
-      isPaid: true,
-    },
-  ];
+   
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-24 flex flex-col items-center min-h-screen">
       <div className="w-full space-y-3 max-w-6xl lg:px-10 text-gray-700">

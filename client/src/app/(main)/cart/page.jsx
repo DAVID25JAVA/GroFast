@@ -86,8 +86,6 @@ function page() {
   const tax = +(totalPrice * 0.02).toFixed(2);
   const grandTotal = totalPrice + tax;
 
-  // if (isLoading) return <Loader />;
-
   // Place order API
   const PlaceOrder = async () => {
     try {
@@ -124,7 +122,7 @@ function page() {
           })),
           address: selectedAddress?._id,
         });
-        console.log("stripe API res--->", res);
+        // console.log("stripe API res--->", res);
 
         if (res.success) {
           window.location.replace(res?.url);
@@ -142,7 +140,6 @@ function page() {
     }
   };
 
-  // console.log("payment option---->", paymentOption);
 
   return finalCart.length > 0 ? (
     <div className="  max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-32 mb-20">

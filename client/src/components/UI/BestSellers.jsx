@@ -19,8 +19,6 @@ function BestSellers() {
     try {
       setIsLoading(true);
       const data = await Api("get", "/product/get");
-      // console.log(data);
-      
       setIsLoading(false);
       if (data?.success) {
         setProduct(data?.product);
