@@ -21,7 +21,7 @@ await connectCloudinary();
 server.post("/stripe", express.raw({type:"application/json"}), stripeWebhook)
 
 // Allow multiple origin
-const allowOrigin = ["http://localhost:3000"];
+const allowOrigin = ["http://localhost:3000", "https://gro-fast-green-cart-web.vercel.app"];
 
 // middilwares configration
 server.use(express.json());
