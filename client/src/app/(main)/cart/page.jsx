@@ -10,6 +10,7 @@ import { assets } from "../../../../public/assets";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/UI/Spinner";
+import Loader from "@/components/UI/Loader";
 
 function page() {
   const [showAddress, setShowAddress] = useState(false);
@@ -20,46 +21,63 @@ function page() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentOption, setPaymentOption] = useState("COD");
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Changed to true initially
 
+  useEffect(() => {
+    fetchAddress();
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // FIXED: Added cartItems as dependency and added loading check
   useEffect(() => {
     const fetchCartProduct = async () => {
       try {
         const ids = Object.keys(cartItems);
+
+        // If no cart items, clear products
         if (!ids.length) {
           setCartProduct([]);
+          setIsLoading(false);
           return;
         }
+
         setIsLoading(true);
         const data = await Api("get", `/cart/product?ids=${ids?.join(",")}`);
+
         if (data?.success) {
-          setIsLoading(false);
           setCartProduct(data?.products);
+        } else {
+          setCartProduct([]);
         }
+        setIsLoading(false);
       } catch (error) {
         console.log(error?.message);
+        setCartProduct([]);
         setIsLoading(false);
       }
     };
 
-    fetchCartProduct();
-  }, [cartItems]);
-
-  useEffect(() => {
-    fetchAddress();
-  }, []);
+    // Only fetch if cartItems is defined (context is loaded)
+    if (cartItems !== undefined && cartItems !== null) {
+      fetchCartProduct();
+    }
+  }, [cartItems]); // Added cartItems as dependency
 
   const fetchAddress = async () => {
     try {
       setIsLoading(true);
       const address = await Api("get", "/user/address/get");
-      console.log(address);
+
       if (address?.success) {
         setAddress(address?.address);
         setSelectedAddress(address?.address[0]);
       } else {
         toast.error(address?.message);
       }
+      setIsLoading(false);
     } catch (error) {
       toast.error(error?.message);
       setIsLoading(false);
@@ -90,6 +108,7 @@ function page() {
     try {
       if (!selectedAddress)
         return toast.error("Please select your address first");
+
       if (paymentOption == "COD") {
         setLoading(true);
         const res = await Api("post", "/order/cod", {
@@ -100,6 +119,7 @@ function page() {
           })),
           address: selectedAddress?._id,
         });
+
         if (res.success) {
           setLoading(false);
           setCartItems({});
@@ -111,7 +131,6 @@ function page() {
           setLoading(false);
         }
       } else {
-        // when online payment then call its API
         setLoading(true);
         const res = await Api("post", "/order/stripe", {
           userId: user?._id,
@@ -121,7 +140,6 @@ function page() {
           })),
           address: selectedAddress?._id,
         });
-        // console.log("stripe API res--->", res);
 
         if (res.success) {
           window.location.replace(res?.url);
@@ -139,205 +157,212 @@ function page() {
     }
   };
 
+  // Show loader only initially, not when isLoading changes
+  if (loading) return <Loader />;
+
+  console.log("final cart--->", finalCart);
+  
 
   return finalCart.length > 0 ? (
-    <div className="  max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-32 mb-20">
-      <div className="flex flex-col md:flex-row ">
-        <div className="flex-1 max-w-4xl">
-          <h1 className="text-3xl font-medium mb-6 text-gray-700">
-            Shopping Cart <span className="text-sm text-primary">3 Items</span>
-          </h1>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-16 sm:py-20 md:py-24">
 
-          <div className="grid grid-cols-[2fr_1fr_1fr] text-gray-500 text-base font-medium pb-3">
-            <p className="text-left">Product Details</p>
-            <p className="text-center">Subtotal</p>
-            <p className="text-center">Action</p>
-          </div>
-
+    <div className="grid lg:grid-cols-3 gap-5 p-5 ">
+      <div className="lg:col-span-2 bg-white shadow-md rounded-lg p-5">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-semibold">Shopping Cart</h2>
+          <p className="text-gray-500">{finalCart.length} Items</p>
+        </div>
+        <div className="hidden lg:grid grid-cols-12 gap-4 mt-5 font-semibold border-b pb-2">
+          <p className="col-span-6">Product Details</p>
+          <p className="col-span-3">Quantity</p>
+          <p className="col-span-2">Subtotal</p>
+          <p className="col-span-1">Action</p>
+        </div>
+        <div className="mt-5 space-y-4">
           {finalCart.map((product) => (
             <div
               key={product._id}
-              className="grid grid-cols-[2fr_1fr_1fr] items-center text-gray-500 pt-3"
+              className="grid lg:grid-cols-12 gap-4 border-b pb-4 last:border-b-0"
             >
-              <div className="flex items-center gap-4">
-                <img
-                  src={product.image[0]}
-                  className="w-24 h-24 object-cover border rounded"
+              <div className="lg:col-span-6 flex gap-3">
+                <Image
+                  src={product?.image[0]}
+                  alt={product?.tittle}
+                  width={80}
+                  height={80}
+                  className="rounded-md object-cover"
                 />
-
                 <div>
-                  <p className="font-semibold">{product.tittle}</p>
-
-                  <div className="flex items-center gap-2 mt-1">
-                    <span>Qty:</span>
-
-                    <select
-                      value={product.quantity}
-                      onChange={(e) =>
-                        updateQuantity(product._id, Number(e.target.value))
-                      }
-                      className="border px-2 py-1 outline-none"
-                    >
-                      {Array(10)
-                        .fill(0)
-                        .map((_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
+                  <h3 className="font-semibold text-lg">{product.tittle}</h3>
+                  <p className="text-sm text-gray-500 line-clamp-2">
+                    {product.description}
+                  </p>
+                  <p className="text-primary font-semibold mt-1">
+                    ${product.offerPrice}
+                  </p>
                 </div>
               </div>
-
-              {/* Subtotal */}
-              <p className="text-center">
-                ${product?.offerPrice * product?.quantity}
-              </p>
-
-              <button
-                onClick={() =>
-                  updateQuantity(product?._id, product?.quantity - 1)
-                }
-                className="mx-auto bg-red-500 text-white cursor-pointer rounded-full w-6 h-6 flex items-center justify-center"
-              >
-                <X size={16} />
-              </button>
+              <div className="lg:col-span-3 flex items-center">
+                <div>
+                  <p className="lg:hidden font-semibold mb-1">Qty:</p>
+                  <select
+                    value={product.quantity}
+                    onChange={(e) =>
+                      updateQuantity(product._id, Number(e.target.value))
+                    }
+                    className="border px-2 py-1 outline-none"
+                  >
+                    {Array(10)
+                      .fill(0)
+                      .map((_, i) => (
+                        <option key={i} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+              <div className="lg:col-span-2 flex items-center">
+                <div>
+                  <p className="lg:hidden font-semibold mb-1">Subtotal:</p>
+                  <p className="font-semibold text-lg">
+                    ${product?.offerPrice * product?.quantity}
+                  </p>
+                </div>
+              </div>
+              <div className="lg:col-span-1 flex items-center">
+                <X
+                  onClick={() =>
+                    updateQuantity(product?._id, product?.quantity - 1)
+                  }
+                  className="mx-auto bg-red-500 text-white cursor-pointer rounded-full w-6 h-6 flex items-center justify-center"
+                />
+              </div>
             </div>
           ))}
-
-          <Link href={"/products"}>
-            <button className="group cursor-pointer flex items-center mt-8 gap-2 text-primary font-medium">
-              <MoveLeft />
-              Continue Shopping
-            </button>
-          </Link>
         </div>
-
-        <div className="max-w-[360px] w-full bg-gray-100/40 p-5 max-md:mt-16 border border-gray-300/70">
-          <h2 className="text-xl md:text-xl font-medium text-gray-700">
-            Order Summary
-          </h2>
-          <hr className="border-gray-300 my-5" />
-
-          <div className="mb-6">
-            <p className="text-sm font-medium uppercase">Delivery Address</p>
-            <div className="relative flex justify-between items-start mt-2">
-              {selectedAddress ? (
-                <div>
-                  <p className="font-medium">
-                    {selectedAddress.firstName} {selectedAddress.lastName}
-                  </p>
-                  <p className="text-gray-600">
-                    {selectedAddress.street}, {selectedAddress.city}
-                  </p>
-                </div>
-              ) : (
-                <p className="text-gray-500">No address found</p>
-              )}
-              <button
-                onClick={() => setShowAddress(!showAddress)}
-                className="text-primary hover:underline cursor-pointer"
-              >
-                Change
-              </button>
-
-              {/* Address List */}
-              {showAddress && (
-                <div className="absolute z-10 mt-14 w-full bg-white border border-gray-300 shadow">
-                  {address.length > 0 ? (
-                    address.map((item) => (
-                      <div
-                        key={item._id}
-                        onClick={() => {
-                          setSelectedAddress(item);
-                          setShowAddress(false);
-                        }}
-                        className={`p-3 text-sm cursor-pointer border-b last:border-b-0
-              ${
-                selectedAddress?._id === item._id
-                  ? "bg-primary/10 border-l-4 border-primary"
-                  : "hover:bg-gray-100"
-              }
-            `}
-                      >
-                        <p className="font-medium">
-                          {item.firstName} {item.lastName}
-                        </p>
-                        <p className="text-gray-600">
-                          {item.street}, {item.city}
-                        </p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="p-3 text-gray-500">No address found</p>
-                  )}
-
-                  <Link href="/address">
-                    <p className="text-center bg-primary text-white p-2 cursor-pointer">
-                      + Add New Address
-                    </p>
-                  </Link>
-                </div>
-              )}
+        <Link
+          href={"/"}
+          className="flex items-center gap-2 text-primary hover:underline mt-5"
+        >
+          <MoveLeft /> Continue Shopping
+        </Link>
+      </div>
+      <div className="bg-white shadow-md rounded-lg p-5 h-fit">
+        <h2 className="text-2xl font-semibold mb-4">Order Summary</h2>
+        <div className="mb-4">
+          <h3 className="font-semibold mb-2">Delivery Address</h3>
+          {selectedAddress ? (
+            <div className="bg-gray-50 p-3 rounded-md text-sm">
+              <p className="font-semibold">
+                {selectedAddress.firstName} {selectedAddress.lastName}
+              </p>
+              <p className="text-gray-600">
+                {selectedAddress.street}, {selectedAddress.city}
+              </p>
             </div>
-
-            <p className="text-sm font-medium uppercase mt-6">Payment Method</p>
-
-            <select
-              value={paymentOption}
-              onChange={(e) => setPaymentOption(e.target.value)}
-              className="w-full border border-gray-300 bg-white px-3 py-2 mt-2 outline-none"
-            >
-              <option value="COD" className="">
-                Cash On Delivery
-              </option>
-              <option value="Online">Online Payment</option>
-            </select>
-          </div>
-
-          <hr className="border-gray-300" />
-
-          <div className="text-gray-500 mt-4 space-y-2">
-            <p className="flex justify-between">
-              <span>Price</span>
-              <span>${totalPrice}</span>
-            </p>
-            <p className="flex justify-between">
-              <span>Shipping Fee</span>
-              <span className="text-green-600">Free</span>
-            </p>
-            <p className="flex justify-between">
-              <span>Tax (2%)</span>
-              <span>${grandTotal}</span>
-            </p>
-            <p className="flex justify-between text-lg font-medium mt-3">
-              <span>Total Amount:</span>
-              <span>${grandTotal}</span>
-            </p>
-          </div>
-
-          <button
-            onClick={PlaceOrder}
-            disabled={loading}
-            className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium transition"
+          ) : (
+            <div className="bg-gray-50 p-3 rounded-md text-sm text-gray-500">
+              No address found
+            </div>
+          )}
+          <p
+            onClick={() => setShowAddress(!showAddress)}
+            className="text-primary hover:underline cursor-pointer mt-2"
           >
-            {loading ? <Spinner /> : "Place Order"}
-          </button>
+            Change
+          </p>
+          {showAddress && (
+            <div className="mt-3 border rounded-md max-h-60 overflow-y-auto">
+              {address.length > 0 ? (
+                address.map((item) => (
+                  <div
+                    key={item._id}
+                    onClick={() => {
+                      setSelectedAddress(item);
+                      setShowAddress(false);
+                    }}
+                    className={`p-3 text-sm cursor-pointer border-b last:border-b-0 ${
+                      selectedAddress?._id === item._id
+                        ? "bg-primary/10 border-l-4 border-primary"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    <p className="font-semibold">
+                      {item.firstName} {item.lastName}
+                    </p>
+                    <p className="text-gray-600">
+                      {item.street}, {item.city}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="p-3 text-sm text-gray-500">
+                  No address found
+                </div>
+              )}
+              <Link
+                href={"/address"}
+                className="block p-3 text-primary hover:bg-gray-50 text-sm"
+              >
+                + Add New Address
+              </Link>
+            </div>
+          )}
         </div>
+        <div className="mb-4">
+          <h3 className="font-semibold mb-2">Payment Method</h3>
+          <select
+            value={paymentOption}
+            onChange={(e) => setPaymentOption(e.target.value)}
+            className="w-full border border-gray-300 bg-white px-3 py-2 mt-2 outline-none"
+          >
+            <option value="COD">Cash On Delivery</option>
+            <option value="ONLINE">Online Payment</option>
+          </select>
+        </div>
+        <div className="space-y-2 text-sm mb-4">
+          <div className="flex justify-between">
+            <span>Price</span>
+            <span>${totalPrice}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Shipping Fee</span>
+            <span className="text-green-600">Free</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Tax (2%)</span>
+            <span>${tax}</span>
+          </div>
+          <div className="flex justify-between font-semibold text-lg pt-2 border-t">
+            <span>Total Amount:</span>
+            <span>${grandTotal}</span>
+          </div>
+        </div>
+        <button
+          onClick={PlaceOrder}
+          disabled={loading}
+          className="w-full bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition disabled:opacity-50"
+        >
+          {loading ? <Spinner /> : "Place Order"}
+        </button>
       </div>
     </div>
+    </div>
   ) : (
-    <div className="md:h-screen h-1/2 py-20 sm:py-0 flex justify-center items-center flex-col">
-      <p className="text-lg sm:text-xl md:text-3xl text-red-500 font-bold text-center">
-        {" "}
-        <Image alt="cart" src={assets?.cart} width={300} className="" />
-        <span>Your cart is empty !</span>
-      </p>
-      <Link href={"/products"}>
-        <button className="bg-primary px-5 py-2 rounded-md text-white mt-10 cursor-pointer">
-          Start Shopping
-        </button>
+    <div className="flex flex-col items-center justify-center min-h-[80vh]">
+      <Image
+        src={assets.cart}
+        alt="empty cart"
+        width={300}
+        height={300}
+      />
+      <h2 className="text-2xl font-semibold mt-4">Your cart is empty!</h2>
+      <Link
+        href={"/"}
+        className="mt-4 bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90"
+      >
+        Start Shopping
       </Link>
     </div>
   );
