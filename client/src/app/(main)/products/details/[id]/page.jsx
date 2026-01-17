@@ -72,11 +72,11 @@ function Page() {
           </div>
 
           {/* Main Image */}
-          <div className="border border-gray-300 rounded sm:w-100 sm:h-100 overflow-hidden">
+          <div className="border border-gray-300 rounded sm:w-100 aspect-square overflow-hidden">
             <img
               src={thumbnail || "/placeholder.png"}
-              alt={product.tittle}
-              className=" object-cover"
+              alt={product?.tittle}
+              className="w-full h-full object-cover"
             />
           </div>
         </div>

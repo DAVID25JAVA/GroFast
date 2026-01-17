@@ -6,8 +6,10 @@ import { useCart } from "@/context/cartContext";
 function ProductCard({ productData }) {
   const { addToCart, cartItems, updateQuantity } = useCart();
 
-  const { _id, tittle, category, image, rating, offerPrice, price } =
+  const { _id, tittle, category, image,  offerPrice, price } =
     productData || {};
+  
+  const defaultRating = 4;
 
   const quantity = cartItems[_id] || 0;
 
@@ -31,12 +33,18 @@ function ProductCard({ productData }) {
 
         {/* Rating */}
         <div className="flex items-center gap-0.5">
-          {Array(5)
-            .fill("")
-            .map((_, i) => (
-              <StarIcon key={i} size={15} />
-            ))}
-          <p>({rating})</p>
+          {Array.from({ length: 5 }, (_, i) => (
+            <StarIcon
+              key={i}
+              size={15}
+              className={
+                i < defaultRating
+                  ? "fill-primary text-primary"
+                  : "text-gray-300"
+              }
+            />
+          ))}
+          <p className="text-sm">({defaultRating})</p>
         </div>
 
         {/* Price + Cart */}
@@ -51,14 +59,14 @@ function ProductCard({ productData }) {
           {/* Cart Action */}
           {quantity === 0 ? (
             <button
-              className="flex cursor-pointer items-center justify-center gap-1 bg-primary md:w-20 w-16 h-[34px] rounded text-white font-medium"
+              className="flex cursor-pointer items-center justify-center gap-1 bg-primary md:w-20 w-16 h-8.5 rounded text-white font-medium"
               onClick={() => addToCart(_id)}
             >
               <ShoppingCart size={15} />
               Add
             </button>
           ) : (
-            <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary rounded select-none">
+            <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-8.5 bg-primary rounded select-none">
               <button
                 onClick={() => updateQuantity(_id, quantity - 1)}
                 className="cursor-pointer text-white text-md px-2 h-full"
@@ -66,9 +74,7 @@ function ProductCard({ productData }) {
                 -
               </button>
 
-              <span className="w-5 text-center text-white">
-                {quantity}
-              </span>
+              <span className="w-5 text-center text-white">{quantity}</span>
 
               <button
                 onClick={() => addToCart(_id)}
