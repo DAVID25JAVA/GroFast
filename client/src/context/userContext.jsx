@@ -16,7 +16,7 @@ export function UserProvider({ children }) {
   const [isUser, setIsUser] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true); 
+  const [authLoading, setAuthLoading] = useState(true);
   const [isForm, setIsForm] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -27,26 +27,37 @@ export function UserProvider({ children }) {
 
   //  CHECK AUTH ONLY ONCE (on refresh)
   useEffect(() => {
-    checkAuthStatus();
+    checkAuthStatus();  
   }, []);
 
   const checkAuthStatus = async () => {
     try {
-      await Promise.all([
-        isSellerStatus(),
-        isUserStatus(),
-      ]);
+      await Promise.all([isSellerStatus(), isUserStatus()]);
     } finally {
-      setAuthLoading(false);  
+      setAuthLoading(false);
     }
   };
 
   const isSellerStatus = async () => {
     try {
       const res = await Api("get", "/seller/is-auth");
-      setIsSeller(!!res?.success);
+      if (res?.success) {
+        setIsSeller(true);
+        // Persist to localStorage for faster initial load
+        if (typeof window !== "undefined") {
+          localStorage.setItem("isSeller", "true");
+        }
+      } else {
+        setIsSeller(false);
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("isSeller");
+        }
+      }
     } catch {
       setIsSeller(false);
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("isSeller");
+      }
     }
   };
 
@@ -94,18 +105,28 @@ export function UserProvider({ children }) {
     }
   };
 
+
+  // Seller logout function
+  const sellerLogout = () => {
+    setIsSeller(false);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("isSeller");
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
         isForm,
         isUser,
         isSeller,
-        authLoading,  
+        authLoading,
         setIsForm,
         setIsUser,
         setIsSeller,
         isLoading,
         setIsLoading,
+        sellerLogout,
         setUser,
         user,
       }}

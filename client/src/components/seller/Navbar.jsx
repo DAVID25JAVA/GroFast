@@ -10,12 +10,15 @@ import { Api } from "../API/Api";
 
 export default function SellerNavbar() {
   const router = useRouter();
-  const { setIsLoading, setIsSeller } = useUser();
+  const { setIsLoading, setIsSeller,sellerLogout  } = useUser();
+
+  
 
   const handLogout = async () => {
     setIsLoading(true);
     try {
       const data = await Api("get", "/seller/logout");
+       sellerLogout();
       setIsLoading(false);
       if (data?.success) {
         setIsSeller(false);
@@ -25,6 +28,7 @@ export default function SellerNavbar() {
       }
     } catch (error) {
       toast.error(error?.message);
+       sellerLogout();
       setIsLoading(false);
       setIsSeller(false);
     }
@@ -37,9 +41,6 @@ export default function SellerNavbar() {
       </Link>
       <div className="flex items-center gap-5 text-gray-500">
         <p>Hi! Admin</p>
-        {/* <button className=" outline-none rounded-full text-sm px-4 py-1 bg-primary text-white cursor-pointer  transition-colors">
-          Logout
-        </button> */}
         <Button onClick={handLogout} className={"bg-primary cursor-pointer text-white"}>
           Logout
         </Button>

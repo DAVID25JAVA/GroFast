@@ -6,6 +6,7 @@ import { Api } from "@/components/API/Api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/UI/Loader";
+import Spinner from "@/components/UI/Spinner";
 
 function Page() {
   const {
@@ -17,6 +18,7 @@ function Page() {
   } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [isSpinner, setIsSpinner] = useState(false);
 
   // 4 image slots
   const [images, setImages] = useState([null, null, null, null]);
@@ -32,7 +34,6 @@ function Page() {
     let timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
-
     return () => clearTimeout(timer);
   }, []);
 
@@ -48,11 +49,8 @@ function Page() {
   }, [images]);
 
   if (loading) {
-    return (
-      <Loader/>
-    )
+    return <Loader />;
   }
-
 
   // image upload per slot
   const handleImageChange = (e, index) => {
@@ -92,8 +90,7 @@ function Page() {
     }
 
     try {
-      setIsLoading(true);
-
+        
       const formData = new FormData();
 
       formData.append(
@@ -110,7 +107,7 @@ function Page() {
       validImages.forEach((img) => {
         formData.append("images", img.file);
       });
-
+setIsSpinner(true)
       const res = await Api("post", "/product/add", formData);
       console.log("res-->", res);
 
@@ -124,6 +121,7 @@ function Page() {
           offerPrice: "",
         });
         setImages([null, null, null, null]);
+        setIsSpinner(false);
       } else {
         toast.error(res.message);
       }
@@ -239,10 +237,10 @@ function Page() {
           Add Product
         </Button> */}
         <button
-          className="bg-primary text-base cursor-pointer text-white px-5 py-2 rounded-md"
+          className="bg-primary text-base cursor-pointer text-white  w-36 py-2 rounded-md"
           type="submit"
         >
-          Add Product
+          {isSpinner ? <Spinner /> : "Add Product"}
         </button>
       </form>
     </div>

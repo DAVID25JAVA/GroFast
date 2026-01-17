@@ -4,19 +4,26 @@ import { useUser } from "@/context/userContext";
 import { Check, Copy } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { assets } from "../../../../public/assets";
 import Link from "next/link";
 
 function page() {
-  const { isSeller, setIsSeller, setIsLoading } = useUser();
+  const { isSeller, setIsSeller, setIsLoading, authLoading } = useUser();
   const [copiedField, setCopiedField] = useState("");
   const [formdata, setFormData] = useState({
     email: "",
     password: "",
   });
   const router = useRouter();
+
+  useEffect(() => {
+    if (authLoading) return;  
+    if (isSeller) {
+      router.push("/seller");
+    }
+  }, [isSeller, authLoading, router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,17 +32,22 @@ function page() {
       email: formdata.email,
       password: formdata.password,
     };
-    console.log("Payload-->", payload);
+    // console.log("Payload-->", payload);
 
     try {
       setIsLoading(true);
 
       const data = await Api("post", "/seller/login", payload);
-      console.log("Seller login--->", data);
+      // console.log("Seller login--->", data);
       setIsLoading(false);
       if (data.success) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("isSeller", "true");
+        }
         setIsSeller(true);
         router.push("/seller");
+      }else {
+        toast.error(data.message || "Login failed");
       }
     } catch (error) {
       setIsLoading(false);
@@ -52,9 +64,19 @@ function page() {
     setTimeout(() => setCopiedField(""), 2000);
   };
 
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+
   return (
     <>
-      <Link href={'/'}>
+      <Link href={"/"}>
         <Image
           src={assets?.logo}
           alt="logo"
@@ -62,7 +84,7 @@ function page() {
           className="mx-5 sm:mx-8 md:mx-10 cursor-pointer"
         />
       </Link>
-      <div className="min-h-screen flex justify-center items-center px-4 sm:px-6 md:px-8">
+      <div className="md:min-h-screen mt-20 md:mt-0 flex justify-center items-center px-4 sm:px-6 md:px-8">
         <div className="w-full max-w-md flex flex-col gap-5 p-5 border rounded-md shadow-md bg-white">
           <p className="text-2xl md:text-3xl font-semibold text-gray-700 text-center pt-5">
             Seller <span className="text-primary">Login </span>
