@@ -26,7 +26,7 @@ function Page() {
       setIsLoading(true);
       const res = await Api("get", `/product/${id}`);
       console.log(res);
-      
+
       if (res?.success) {
         setProduct(res.data);
         setThumbnail(res.data?.image?.[0] || null);
@@ -53,14 +53,14 @@ function Page() {
 
       <div className="flex flex-col md:flex-row gap-16 mt-6">
         {/* Image Section */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-col sm:flex-row">
           {/* Thumbnails */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-row sm:flex-col gap-3">
             {product?.image?.map((img, index) => (
               <div
                 key={index}
                 onClick={() => setThumbnail(img)}
-                className="border w-24 h-24 border-gray-300 rounded overflow-hidden cursor-pointer"
+                className="border sm:w-24 sm:h-24 border-gray-300 rounded overflow-hidden cursor-pointer"
               >
                 <img
                   src={img}
@@ -72,11 +72,11 @@ function Page() {
           </div>
 
           {/* Main Image */}
-          <div className="border border-gray-300 rounded w-[400px] h-[400px] overflow-hidden">
+          <div className="border border-gray-300 rounded sm:w-100 sm:h-100 overflow-hidden">
             <img
               src={thumbnail || "/placeholder.png"}
               alt={product.tittle}
-              className="w-full h-full object-cover"
+              className=" object-cover"
             />
           </div>
         </div>
