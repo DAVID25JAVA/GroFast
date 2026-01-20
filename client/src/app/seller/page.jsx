@@ -90,7 +90,6 @@ function Page() {
     }
 
     try {
-        
       const formData = new FormData();
 
       formData.append(
@@ -107,12 +106,11 @@ function Page() {
       validImages.forEach((img) => {
         formData.append("images", img.file);
       });
-setIsSpinner(true)
+      setIsSpinner(true);
       const res = await Api("post", "/product/add", formData);
       console.log("res-->", res);
-
       if (res.success) {
-        toast.success(res.message);
+        toast.success(res?.message)
         setProduct({
           tittle: "",
           description: "",
@@ -205,10 +203,11 @@ setIsSpinner(true)
           required
         >
           <option value="">Select Category</option>
-          <option value="Vegitales">Vegitales</option>
+          <option value="Vegitales">Vegetable</option>
           <option value="Electronics">Electronics</option>
           <option value="Clothing">Clothing</option>
           <option value="Accessories">Accessories</option>
+          <option value="Instant">Instant</option>
         </select>
 
         {/* Prices */}

@@ -6,6 +6,7 @@ import { Api } from "../API/Api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/cartContext";
+import Spinner from "./Spinner";
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -20,7 +21,14 @@ function Login() {
     email: "",
     password: "",
   });
-  const { isForm, setIsForm, isUser, setIsUser } = useUser();
+  const {
+    isForm,
+    setIsForm,
+    isUser,
+    setIsUser,
+    isLoading,
+    setIsLoading,
+  } = useUser();
   if (!isForm) return null;
 
   const handleSignup = async (e) => {
@@ -36,6 +44,7 @@ function Login() {
       password: loginForm.password,
     };
 
+    setIsLoading(true);
     const payload = !isLogin ? signup : login;
 
     const endPoint = !isLogin ? "/user/register" : "/user/login";
@@ -43,17 +52,20 @@ function Login() {
       const res = await Api("post", endPoint, payload);
       console.log(res);
       if (res?.success) {
+        setIsLoading(false);
         toast.success(res?.message);
         setIsUser(true);
         setIsForm(false);
-        refreshUserStatus()
+        refreshUserStatus();
         router.push("/");
       } else {
         toast.error(res?.message);
+        setIsLoading(false)
       }
     } catch (error) {
       console.log(error);
       toast.error(error?.message);
+      setIsLoading(false)
     }
   };
 
@@ -166,9 +178,10 @@ function Login() {
             {/* button */}
             <button
               type="submit"
-              className="bg-primary text-white w-full p-2 cursor-pointer mt-5"
+              className="bg-primary text-white w-full p-2 cursor-pointer mt-5 flex items-center gap-2 justify-center"
             >
               {isLogin ? "Login" : "Create account"}
+              {isLoading && <Spinner />}
             </button>
           </div>
         </div>
