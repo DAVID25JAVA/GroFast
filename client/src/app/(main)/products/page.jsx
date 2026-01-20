@@ -36,7 +36,7 @@ function page() {
   if(isLoading) return <Loader/>
 
   return (
-    <div className=" max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-28 pb-20 h-screen">
+    <div className=" max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-28 pb-20  ">
       <p className="font-semibold uppercase text-xl sm:text-2xl md:text-2xl text-gray-700">
         all products
       </p>

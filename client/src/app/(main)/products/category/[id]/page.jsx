@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { dummyProducts } from "../../../../../../public/assets";
 import { useParams } from "next/navigation";
 import ProductCard from "@/components/UI/Card";
 import toast from "react-hot-toast";
@@ -8,80 +7,72 @@ import { Api } from "@/components/API/Api";
 import { useUser } from "@/context/userContext";
 import Loader from "@/components/UI/Loader";
 import Link from "next/link";
-import { MoveLeft} from "lucide-react";
+import { MoveLeft } from "lucide-react";
 
-function page() {
+function Page() {
   const { id } = useParams();
   const [products, setProducts] = useState([]);
   const { setIsLoading, isLoading } = useUser();
-  console.log(id);
 
   useEffect(() => {
-    if (id) {
-      fetchProducts(id);
-    }
+    if (id) fetchProducts(id);
   }, [id]);
 
   const fetchProducts = async (category) => {
     try {
       setIsLoading(true);
       const res = await Api("get", `/product/category/${category}`);
-      if (res?.success) {
-        setIsLoading(false);
-        setProducts(res?.products);
-      }
-      console.log(res);
+      setProducts(res?.products || []);
     } catch (error) {
-      setIsLoading(false);
       toast.error(error?.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (products.length == 0) {
+  // 1️⃣ Loader first
+  if (isLoading) return <Loader />;
+
+  // 2️⃣ No products found
+  if (!isLoading && products.length === 0) {
     return (
-      <>
-        {products.length == 0 && (
-          <div className="flex flex-col justify-center items-center md:h-screen h-96 ">
-            <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-600">
-              No product found in this category
-            </p>
-            <Link href={"/"}>
-              <button className="text-white mt-5 cursor-pointer bg-primary px-4 py-2 rounded-md">
-                Back To Home
-              </button>
-            </Link>
-          </div>
-        )}
-      </>
+      <div className="flex flex-col justify-center items-center md:h-screen h-96">
+        <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-600">
+          No product found in this category
+        </p>
+        <Link href="/">
+          <button className="text-white mt-5 bg-primary px-4 py-2 rounded-md">
+            Back To Home
+          </button>
+        </Link>
+      </div>
     );
   }
 
-  if (isLoading) return <Loader />;
-
+  // 3️⃣ Products exist
   return (
-    <div className="h-screen py-28 max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
-      <Link href={"/"}>
-        <div className="text-white bg-primary w-36 text-center py-0.5 rounded-full text-xs flex items-center justify-center gap-0.5">
-          <MoveLeft />
+    <div className="py-28 max-w-6xl mx-auto px-4">
+      <Link href="/">
+        <div className="text-white bg-primary w-36 text-center py-1 rounded-full text-xs flex items-center justify-center gap-1">
+          <MoveLeft size={14} />
           <p>Back To Home</p>
         </div>
       </Link>
-      <p className="text-gray-700 font-semibold text-base pt-3 sm:text-lg md:text-xl uppercase">
+
+      <p className="text-gray-700 font-semibold text-base pt-3 sm:text-lg uppercase">
         Filter By{" "}
         <span className="border-b-2 border-primary text-primary">
           {id.toUpperCase()}
         </span>
       </p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5   mt-5">
-        {products?.length > 0 &&
-          products
-            ?.slice(0, 6)
-            ?.map((product) => (
-              <ProductCard productData={product} key={product?._id} />
-            ))}
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-5">
+        {products.map((product) => (
+          <ProductCard productData={product} key={product?._id} />
+        ))}
       </div>
     </div>
   );
 }
 
-export default page;
+export default Page;

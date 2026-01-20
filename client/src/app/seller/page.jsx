@@ -97,7 +97,7 @@ function Page() {
         JSON.stringify({
           tittle: product.tittle,
           description: product.description,
-          category: product.category,
+          category: product.category.toLowerCase(),
           price: product.price,
           offerPrice: product.offerPrice,
         })
@@ -203,11 +203,13 @@ function Page() {
           required
         >
           <option value="">Select Category</option>
-          <option value="Vegitales">Vegetable</option>
+          <option value="Vegetable">Vegetable</option>
           <option value="Electronics">Electronics</option>
           <option value="Clothing">Clothing</option>
           <option value="Accessories">Accessories</option>
           <option value="Instant">Instant</option>
+          <option value="Fruits">Fruits</option>
+          <option value="Cold-Drinks">Cold-Drinks</option>
         </select>
 
         {/* Prices */}
