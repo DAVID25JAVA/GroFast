@@ -30,6 +30,9 @@ const page = () => {
     }
   };
 
+  console.log(order);
+  
+
   if(isLoading) return <Loader/>
 
    
@@ -54,7 +57,7 @@ const page = () => {
                 {order.items.map((item, index) => (
                   <div key={index} className="flex flex-col justify-center">
                     <p className="font-medium">
-                      {item.product.tittle}{" "}
+                      {item.product?.tittle}{" "}
                       <span
                         className={`text-green-500 ${
                           item.quantity < 2 && "hidden"
