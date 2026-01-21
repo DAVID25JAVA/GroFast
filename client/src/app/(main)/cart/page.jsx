@@ -160,7 +160,7 @@ function page() {
   // Show loader only initially, not when isLoading changes
   if (loading) return <Loader />;
 
-  console.log("final cart--->", finalCart);
+ 
   
 
   return finalCart.length > 0 ? (
