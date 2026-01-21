@@ -18,9 +18,10 @@ import { useSearch } from "@/context/searchContext";
 import { Api } from "../API/Api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Spinner from "./Spinner";
 
 function Header() {
-  const { isForm, setIsForm, isUser, setIsUser } = useUser();
+  const { isForm, setIsForm, isUser, setIsUser, isUserLogin } = useUser();
   const { setOpenSearch } = useSearch();
   const { cartItems } = useCart();
   const router = useRouter();
@@ -44,7 +45,7 @@ function Header() {
   const logout = async () => {
     try {
       const res = await Api("get", "/user/logout");
-      console.log("logout------>", res);
+      // console.log("logout------>", res);
       if (res?.success) {
         toast.success(res?.message);
         setIsUser(false);
@@ -121,7 +122,7 @@ function Header() {
 
                     {/* Dropdown */}
                     <div
-                      className="absolute min-w-[155px] right-0 mt-2 px-5 py-2 text-gray-700 text-base bg-white shadow-lg rounded-md 
+                      className="absolute min-w-38.5 right-0 mt-2 px-5 py-2 text-gray-700 text-base bg-white shadow-lg rounded-md 
                       opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
                     >
                       <ul className="space-y-2 space-x-5">
@@ -144,7 +145,7 @@ function Header() {
                       className="bg-primary text-white px-5 py-2 hidden md:block rounded-md"
                     >
                       {" "}
-                      Login
+                       {isUserLogin?<Spinner/>:"Login"}
                     </button>
                     {/* <Button
                     variant={"primary"}

@@ -52,10 +52,22 @@ export const addProduct = async (req, res) => {
 // Get Product API--->"/api/product/get"
 export const getProduct = async (req, res) => {
   try {
-    const product = await productModel.find({});
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+    const product = await productModel.find({}).skip(skip).limit(limit);
+    // console.log("ptoduct--->", product);
+    const totalProducts = await productModel.countDocuments();
+    // console.log(totalProducts);
+    
     if (!product)
       return res.json({ success: false, message: "Product Not Found!" });
-    return res.json({ success: true, product });
+    return res.json({
+      success: true,
+      product: product,
+      totalPages: Math.ceil(totalProducts / limit),
+      currentPage: page,
+    });
   } catch (error) {
     console.log("Get product error---->", error?.message);
     return res.json({ success: false, message: error.message });
@@ -134,9 +146,9 @@ export const SearchProduct = async (req, res) => {
     const searchQuery = {
       tittle: { $regex: searchText.trim(), $options: "i" },
     };
-     
+
     const products = await productModel.find(searchQuery);
-    
+
     if (products.length === 0) {
       return res.status(200).json({
         success: true,

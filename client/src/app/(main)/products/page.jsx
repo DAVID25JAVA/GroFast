@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import { useState, useEffect } from "react";
 import { dummyProducts } from "../../../../public/assets";
@@ -8,21 +8,23 @@ import { useUser } from "@/context/userContext";
 import { Api } from "@/components/API/Api";
 
 function page() {
-   
-   const { setIsLoading, isLoading } = useUser();
+  const { setIsLoading, isLoading } = useUser();
   const [product, setProduct] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetchProduct();
+    fetchProduct(page);
   }, []);
 
-  const fetchProduct = async () => {
+  const fetchProduct = async (pageNumber) => {
     try {
       setIsLoading(true);
-      const data = await Api("get", "/product/get");
+      const data = await Api("get", `/product/get?page=${pageNumber}`);
       setIsLoading(false);
       if (data?.success) {
         setProduct(data?.product);
+        setTotalPages(data?.totalPages);
       } else {
         toast.error(data?.message);
         setIsLoading(false);
@@ -33,7 +35,9 @@ function page() {
     }
   };
 
-  if(isLoading) return <Loader/>
+  console.log("total--->", totalPages);
+
+  if (isLoading) return <Loader />;
 
   return (
     <div className=" max-w-6xl mx-auto px-4 sm:px-6 md:px-8 pt-28 pb-20  ">

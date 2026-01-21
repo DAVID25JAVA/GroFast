@@ -19,6 +19,7 @@ export function UserProvider({ children }) {
   const [authLoading, setAuthLoading] = useState(true);
   const [isForm, setIsForm] = useState(false);
   const [user, setUser] = useState(null);
+  const [isUserLogin, setIsUserLogin] = useState(false);
 
   const { cartItems, setCartItems } = useCart();
 
@@ -27,7 +28,7 @@ export function UserProvider({ children }) {
 
   //  CHECK AUTH ONLY ONCE (on refresh)
   useEffect(() => {
-    checkAuthStatus();  
+    checkAuthStatus();
   }, []);
 
   const checkAuthStatus = async () => {
@@ -63,16 +64,20 @@ export function UserProvider({ children }) {
 
   const isUserStatus = async () => {
     try {
+      setIsUserLogin(true);
       const res = await Api("get", "/user/is-auth");
       if (res?.success) {
+        setIsUserLogin(false);
         setIsUser(true);
         setUser(res.user);
         setCartItems(res.user.cartItems || {});
       } else {
         setIsUser(false);
+        setIsUserLogin(false);
         setUser(null);
       }
     } catch {
+      setIsUserLogin(false);
       setIsUser(false);
       setUser(null);
     }
@@ -105,7 +110,6 @@ export function UserProvider({ children }) {
     }
   };
 
-
   // Seller logout function
   const sellerLogout = () => {
     setIsSeller(false);
@@ -128,6 +132,7 @@ export function UserProvider({ children }) {
         setIsLoading,
         sellerLogout,
         setUser,
+        isUserLogin,
         user,
       }}
     >
