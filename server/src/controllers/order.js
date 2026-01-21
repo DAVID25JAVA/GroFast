@@ -3,36 +3,95 @@ import productModel from "../models/product.js";
 import Stripe from "stripe";
 import User from "../models/user.js";
 
+// export const placeOrderCOD = async (req, res) => {
+//   try {
+//     const { userId, items, address } = req.body;
+//     //  console.log("order Data--->", userId, items, address);
+//     if (!userId || !items || items.length === 0) {
+//       return res.json({ success: false, message: "Invalid Data" });
+//     }
+//     let amount = 0;
+//     for (const item of items) {
+//       const product = await productModel.findById(item.product);
+//       if (!product) {
+//         return res.json({ success: false, message: "Product not found" });
+//       }
+//       amount += product.price * item.quantity;
+//     }
+//     // Add 2% tax
+//     amount += Math.floor(amount * 0.02);
+//     await orderModel.create({
+//       userId,
+//       items,
+//       amount,
+//       address,
+//       paymentType: "COD",
+//     });
+//     return res.json({ success: true, message: "Order placed successfully" });
+//   } catch (error) {
+//     console.log("Order error--->", error.message);
+//     return res.json({ success: false, message: error.message });
+//   }
+// };
+
+const TAX_RATE = 0.02; // 2%
+
 export const placeOrderCOD = async (req, res) => {
   try {
     const { userId, items, address } = req.body;
-    //  console.log("order Data--->", userId, items, address);
+
+    // Validate input
     if (!userId || !items || items.length === 0) {
       return res.json({ success: false, message: "Invalid Data" });
     }
+
+    if (!address) {
+      return res.json({ success: false, message: "Address is required" });
+    }
+
     let amount = 0;
+    
+    // Calculate total amount using offerPrice (same as frontend)
     for (const item of items) {
       const product = await productModel.findById(item.product);
+      
       if (!product) {
-        return res.json({ success: false, message: "Product not found" });
+        return res.json({ 
+          success: false, 
+          message: `Product not found: ${item.product}` 
+        });
       }
-      amount += product.price * item.quantity;
+
+      // Use offerPrice to match frontend calculation
+      const itemTotal = product.offerPrice * item.quantity;
+      amount += itemTotal;
     }
-    // Add 2% tax
-    amount += Math.floor(amount * 0.02);
-    await orderModel.create({
+
+    // Add 2% tax (matching frontend calculation)
+    const tax = Math.round(amount * TAX_RATE * 100) / 100; // Round to 2 decimals
+    const finalAmount = amount + tax;
+
+    // Create order
+    const order = await orderModel.create({
       userId,
       items,
-      amount,
+      amount: finalAmount,
       address,
       paymentType: "COD",
     });
-    return res.json({ success: true, message: "Order placed successfully" });
+
+    return res.json({ 
+      success: true, 
+      message: "Order placed successfully",
+      orderId: order._id 
+    });
   } catch (error) {
     console.log("Order error--->", error.message);
     return res.json({ success: false, message: error.message });
   }
 };
+
+
 
 // Get Order by UserId
 export const getOrderByUserId = async (req, res) => {
@@ -142,30 +201,118 @@ export const getAllOrder = async (req, res) => {
 //   }
 // };
 
-const TAX_RATE = 0.02; // 2%
+// const TAX_RATE = 0.02; // 2%
+
+// export const placeOrderWithStripe = async (req, res) => {
+//   try {
+//     const { userId, items, address } = req.body;
+//     // console.log("order Data--->", userId, items, address);
+
+//     const { origin } = req.headers;
+//     if (!userId || !items || items.length === 0) {
+//       return res.json({ success: false, message: "Invalid Data" });
+//     }
+
+//     let amount = 0;
+//     let productData = [];
+//     for (const item of items) {
+//       const product = await productModel.findById(item.product);
+
+//       if (!product) {
+//         return res.json({ success: false, message: "Product not found" });
+//       }
+
+//       const price = product.offerPrice; //  single source of truth
+//       const itemTotal = price * item.quantity;
+//       amount += itemTotal;
+//       productData.push({
+//         tittle: product.tittle,
+//         price,
+//         quantity: item.quantity,
+//       });
+//     }
+
+//     // Apply tax ONCE on total
+//     const tax = Math.round(amount * TAX_RATE);
+//     const finalAmount = amount + tax;
+
+//     // Save order
+//     const order = await orderModel.create({
+//       userId,
+//       items,
+//       amount: finalAmount,
+//       address,
+//       paymentType: "Online",
+//     });
+
+//     // Stripe instance
+//     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+//     // Stripe line items (amount in cents)
+//     const line_items = productData.map((item) => ({
+//       price_data: {
+//         currency: "usd",
+//         product_data: {
+//           name: item.tittle,
+//         },
+//         unit_amount: Math.round(item.price * (1 + TAX_RATE) * 100),
+//       },
+//       quantity: item.quantity,
+//     }));
+
+//     // Create session
+//     const session = await stripe.checkout.sessions.create({
+//       mode: "payment",
+//       line_items,
+//       success_url: `${origin}/loader?next=my-order`,
+//       cancel_url: `${origin}/cart`,
+//       metadata: {
+//         orderId: order._id.toString(),
+//         userId,
+//       },
+//     });
+
+//     return res.json({ success: true, url: session.url });
+//   } catch (error) {
+//     console.log("Order error --->", error.message);
+//     return res.json({ success: false, message: error.message });
+//   }
+// };
+
 
 export const placeOrderWithStripe = async (req, res) => {
   try {
     const { userId, items, address } = req.body;
-    // console.log("order Data--->", userId, items, address);
-
     const { origin } = req.headers;
+
+    // Validate input
     if (!userId || !items || items.length === 0) {
       return res.json({ success: false, message: "Invalid Data" });
     }
 
+    if (!address) {
+      return res.json({ success: false, message: "Address is required" });
+    }
+
     let amount = 0;
     let productData = [];
+
+    // Calculate total and collect product data
     for (const item of items) {
       const product = await productModel.findById(item.product);
 
       if (!product) {
-        return res.json({ success: false, message: "Product not found" });
+        return res.json({ 
+          success: false, 
+          message: `Product not found: ${item.product}` 
+        });
       }
 
-      const price = product.offerPrice; //  single source of truth
+      // Use offerPrice as single source of truth
+      const price = product.offerPrice;
       const itemTotal = price * item.quantity;
       amount += itemTotal;
+      
       productData.push({
         tittle: product.tittle,
         price,
@@ -174,7 +321,7 @@ export const placeOrderWithStripe = async (req, res) => {
     }
 
     // Apply tax ONCE on total
-    const tax = Math.round(amount * TAX_RATE);
+    const tax = Math.round(amount * TAX_RATE * 100) / 100;
     const finalAmount = amount + tax;
 
     // Save order
@@ -184,24 +331,26 @@ export const placeOrderWithStripe = async (req, res) => {
       amount: finalAmount,
       address,
       paymentType: "Online",
+      paymentStatus: "pending", // Add payment status
     });
 
-    // Stripe instance
+    // Initialize Stripe
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-    // Stripe line items (amount in cents)
+    // Create Stripe line items (amount in cents)
     const line_items = productData.map((item) => ({
       price_data: {
         currency: "usd",
         product_data: {
           name: item.tittle,
         },
+        // Price per unit with tax included (in cents)
         unit_amount: Math.round(item.price * (1 + TAX_RATE) * 100),
       },
       quantity: item.quantity,
     }));
 
-    // Create session
+    // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items,
@@ -209,16 +358,22 @@ export const placeOrderWithStripe = async (req, res) => {
       cancel_url: `${origin}/cart`,
       metadata: {
         orderId: order._id.toString(),
-        userId,
+        userId: userId.toString(),
       },
     });
 
-    return res.json({ success: true, url: session.url });
+    return res.json({ 
+      success: true, 
+      url: session.url,
+      orderId: order._id 
+    });
   } catch (error) {
     console.log("Order error --->", error.message);
     return res.json({ success: false, message: error.message });
   }
 };
+
+
 
 export const stripeWebhook = async (req, res) => {
   const stripewebhook = new Stripe(process.env.STRIPE_SECRET_KEY);
