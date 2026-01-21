@@ -65,7 +65,7 @@ function Page() {
                 <img
                   src={img}
                   alt="thumbnail"
-                  className="w-full h-full object-cover"
+                  className="md:w-full md:h-full w-24 object-cover"
                 />
               </div>
             ))}
@@ -76,7 +76,7 @@ function Page() {
             <img
               src={thumbnail || "/placeholder.png"}
               alt={product?.tittle}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover p-2"
             />
           </div>
         </div>

@@ -18,7 +18,7 @@ function ProductCard({ productData }) {
       <div className="group cursor-pointer flex items-center justify-center px-2">
         <Link href={`/products/details/${_id}`}>
           <img
-            className="group-hover:scale-105 transition max-w-26 md:w-28 md:h-24"
+            className="group-hover:scale-105 transition  w-24 h-20 md:w-28 md:h-24"
             src={image?.[0]}
             alt={tittle}
           />
