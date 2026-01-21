@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { Api } from "@/components/API/Api";
 
@@ -8,33 +8,76 @@ export const CartContext = createContext();
 function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState({});
   const [user, setUser] = useState(null);
+  const [isCartLoaded, setIsCartLoaded] = useState(false); 
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
-    isUserStatus();
+    initializeCart();
   }, []);
 
-  const isUserStatus = async () => {
+  const initializeCart = async () => {
     try {
       const res = await Api("get", "/user/is-auth");
-      console.log("user--->", res);
       if (res?.success) {
         setUser(res.user);
+        // Load cart from user data
+        if (res.user?.cartItems) {
+          setCartItems(res.user.cartItems);
+        } else {
+          setCartItems({});  
+        }
       } else {
         setUser(null);
+        setCartItems({});
       }
-    } catch {
+    } catch (error) {
+      console.error("Init cart error:", error);
       setUser(null);
+      setCartItems({});
+    } finally {
+      setIsCartLoaded(true);  
     }
   };
 
-   // Add this function to refresh user status
-  const refreshUserStatus = () => {
-    isUserStatus();
+  
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    if (user && isCartLoaded) {
+      const timer = setTimeout(() => {
+        syncCartToBackend();
+      }, 500);  
+
+      return () => clearTimeout(timer);
+    }
+  }, [cartItems]);
+
+  const syncCartToBackend = async () => {
+    if (!user?._id) return;
+    
+    try {
+      await Api("post", "/cart/update", {
+        userId: user._id,
+        cartItems: cartItems,
+      });
+      console.log("Cart synced to backend");
+    } catch (error) {
+      console.error("Failed to sync cart:", error);
+    }
+  };
+
+  const refreshUserStatus = async () => {
+    isInitialMount.current = true;
+    setIsCartLoaded(false);
+    await initializeCart();
   };
 
   const addToCart = (productId) => {
     if (user == null) {
-      toast.error("Please Login !");
+      toast.error("Please Login!");
       return;
     }
     setCartItems((prev) => ({
@@ -43,9 +86,6 @@ function CartProvider({ children }) {
     }));
     toast.success("Item added to cart");
   };
-
-
-
 
   const removeToCart = (productId) => {
     setCartItems((prev) => {
@@ -76,7 +116,8 @@ function CartProvider({ children }) {
         addToCart,
         removeToCart,
         updateQuantity,
-        refreshUserStatus
+        refreshUserStatus,
+        isCartLoaded, 
       }}
     >
       {children}

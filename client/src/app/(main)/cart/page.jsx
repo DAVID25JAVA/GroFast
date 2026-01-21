@@ -14,7 +14,7 @@ import Loader from "@/components/UI/Loader";
 
 function Page() {
   const [showAddress, setShowAddress] = useState(false);
-  const { cartItems, updateQuantity, setCartItems } = useCart();
+  const { cartItems, updateQuantity, setCartItems, isCartLoaded } = useCart();
   const { user } = useUser();
   const [cartProduct, setCartProduct] = useState([]);
   const [address, setAddress] = useState([]);
@@ -33,15 +33,17 @@ function Page() {
   useEffect(() => {
     const fetchCartProduct = async () => {
       try {
-        // Wait for cartItems to be defined (context loaded)
-        if (cartItems === undefined || cartItems === null) {
+         // WAIT for cart to be loaded from backend
+        if (!isCartLoaded) {
+          console.log("Waiting for cart to load...");
           return;
         }
 
         const ids = Object.keys(cartItems).filter(id => cartItems[id] > 0);
 
-        // If no cart items, clear products and finish loading
-        if (!ids.length) {
+       // If no cart items, clear products and finish loading
+        if (ids.length === 0) {
+          console.log("No items in cart");
           setCartProduct([]);
           setLoading(false);
           return;
@@ -64,7 +66,7 @@ function Page() {
     };
 
     fetchCartProduct();
-  }, [cartItems]);
+  }, [cartItems, isCartLoaded]);
 
   const fetchAddress = async () => {
     try {
@@ -136,7 +138,6 @@ function Page() {
         const res = await Api("post", "/order/cod", orderData);
 
         if (res.success) {
-          // Clear cart
           setCartItems({});
           setCartProduct([]);
           toast.success(res.message || "Order placed successfully");
@@ -148,10 +149,9 @@ function Page() {
         const res = await Api("post", "/order/stripe", orderData);
 
         if (res.success && res.url) {
-          // Clear cart before redirect
+          window.location.replace(res.url);
           setCartItems({});
           setCartProduct([]);
-          window.location.replace(res.url);
         } else {
           toast.error(res.message || "Failed to initiate payment");
         }

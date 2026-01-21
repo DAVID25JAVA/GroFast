@@ -7,7 +7,7 @@ function ProductCard({ productData }) {
   const { addToCart, cartItems, updateQuantity } = useCart();
 
   const { _id, tittle, category, image,  offerPrice, price } =
-    productData || {};
+    productData ;
   
   const defaultRating = 4;
 
