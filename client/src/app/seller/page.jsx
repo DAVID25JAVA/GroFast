@@ -110,7 +110,7 @@ function Page() {
       const res = await Api("post", "/product/add", formData);
       console.log("res-->", res);
       if (res.success) {
-        toast.success(res?.message)
+        toast.success(res?.message);
         setProduct({
           tittle: "",
           description: "",
@@ -203,13 +203,15 @@ function Page() {
           required
         >
           <option value="">Select Category</option>
-          <option value="Vegetable">Vegetable</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Accessories">Accessories</option>
-          <option value="Instant">Instant</option>
-          <option value="Fruits">Fruits</option>
-          <option value="Cold-Drinks">Cold-Drinks</option>
+          <option value="vegetable">Vegetable</option>
+          <option value="clothing">Clothing</option>
+          <option value="accessories">Accessories</option>
+          <option value="instant">Instant</option>
+          <option value="fruits">Fruits</option>
+          <option value="drinks">Cold-Drinks</option>
+          <option value="dairy">Dairy Product</option>
+          <option value="bakery">Bakery & Breads</option>
+          <option value="grains">Grains & Cereals</option>
         </select>
 
         {/* Prices */}
