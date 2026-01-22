@@ -8,9 +8,16 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { assets } from "../../../../public/assets";
 import Link from "next/link";
+import Spinner from "@/components/UI/Spinner";
 
 function page() {
-  const { isSeller, setIsSeller, setIsLoading, authLoading } = useUser();
+  const {
+    isSeller,
+    setIsSeller,
+    setIsLoading,
+    authLoading,
+    isLoading,
+  } = useUser();
   const [copiedField, setCopiedField] = useState("");
   const [formdata, setFormData] = useState({
     email: "",
@@ -19,7 +26,7 @@ function page() {
   const router = useRouter();
 
   useEffect(() => {
-    if (authLoading) return;  
+    if (authLoading) return;
     if (isSeller) {
       router.push("/seller");
     }
@@ -27,27 +34,21 @@ function page() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    // setIsLoading(true);
     const payload = {
       email: formdata.email,
       password: formdata.password,
     };
-    // console.log("Payload-->", payload);
-
     try {
       setIsLoading(true);
-
       const data = await Api("post", "/seller/login", payload);
-      // console.log("Seller login--->", data);
-      setIsLoading(false);
       if (data.success) {
-        if (typeof window !== "undefined") {
-          localStorage.setItem("isSeller", "true");
-        }
+        setIsLoading(false);
+        localStorage.setItem("isSeller", "true");
         setIsSeller(true);
         router.push("/seller");
-      }else {
+      } else {
         toast.error(data.message || "Login failed");
+        setIsLoading(false);
       }
     } catch (error) {
       setIsLoading(false);
@@ -72,7 +73,6 @@ function page() {
       </div>
     );
   }
-
 
   return (
     <>
@@ -123,7 +123,7 @@ function page() {
               type="submit"
               className="bg-primary text-white w-full p-2 cursor-pointer mt-10"
             >
-              Login
+              {isLoading ? <Spinner /> : " Login"}
             </button>
 
             {/* Login Credentials */}

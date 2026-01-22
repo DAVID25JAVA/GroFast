@@ -20,7 +20,6 @@ export function UserProvider({ children }) {
   const [isForm, setIsForm] = useState(false);
   const [user, setUser] = useState(null);
   const [isUserLogin, setIsUserLogin] = useState(false);
-
   const { cartItems, setCartItems } = useCart();
 
   //  Prevent API call on first cart load
@@ -28,6 +27,12 @@ export function UserProvider({ children }) {
 
   //  CHECK AUTH ONLY ONCE (on refresh)
   useEffect(() => {
+    //  if (typeof window !== "undefined") {
+    //   const storedSeller = localStorage.getItem("isSeller");
+    //   if (storedSeller === "true") {
+    //     setIsSeller(true);
+    //   }
+    // }
     checkAuthStatus();
   }, []);
 
@@ -45,20 +50,14 @@ export function UserProvider({ children }) {
       if (res?.success) {
         setIsSeller(true);
         // Persist to localStorage for faster initial load
-        if (typeof window !== "undefined") {
-          localStorage.setItem("isSeller", "true");
-        }
+        localStorage.setItem("isSeller", "true");
       } else {
         setIsSeller(false);
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("isSeller");
-        }
+         localStorage.removeItem("isSeller");
       }
     } catch {
       setIsSeller(false);
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("isSeller");
-      }
+      localStorage.removeItem("isSeller");
     }
   };
 
@@ -86,7 +85,6 @@ export function UserProvider({ children }) {
   //  Sync cart ONLY when user changes cart
   useEffect(() => {
     if (!user) return;
-
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
