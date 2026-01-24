@@ -45,7 +45,6 @@ function Header() {
   const logout = async () => {
     try {
       const res = await Api("get", "/user/logout");
-      // console.log("logout------>", res);
       if (res?.success) {
         toast.success(res?.message);
         setIsUser(false);
@@ -220,7 +219,7 @@ function Header() {
                     <button
                       onClick={() => {
                         closeMobileMenu();
-                        // Add your sign out logic here
+                        logout();
                       }}
                       className="block w-full text-left py-2 px-3 text-red-600 hover:bg-red-50 rounded-md"
                     >
