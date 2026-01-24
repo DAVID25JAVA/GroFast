@@ -12,16 +12,16 @@ export const sellerLogin = async (req, res) => {
       const token = await jwt.sign({ email }, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
-      console.log("Sellet token -->",req.cookies);
+      // console.log("Sellet token -->",req.cookies);
 
       res.cookie("sellerToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV == "production",
-        sameSite:  "lax",
+        secure: true,
+        sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      console.log("sellerToken---", req.cookie);
+      // console.log("sellerToken---", req.cookie);
 
       return res.json({ success: true, message: "Logged In" });
     } else {
@@ -48,8 +48,8 @@ export const sellerLogout = (req, res) => {
   try {
     res.clearCookie("sellerToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV == "production",
-       sameSite: "lax",
+      secure: true,
+      sameSite: "none",
     });
     return res.json({ success: true, message: "logged Out" });
   } catch (error) {

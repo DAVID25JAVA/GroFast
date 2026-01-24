@@ -26,7 +26,13 @@ const allowOrigin = ["http://localhost:3000", "https://gro-fast-green-cart-web.v
 // middilwares configration
 server.use(express.json());
 server.use(cookieParser());
-server.use(cors({ origin: allowOrigin, credentials: true }));
+server.use(
+  cors(
+  {
+    origin: allowOrigin,
+    credentials: true
+  }
+));
 
 // server.use((req, res) => {
 //   res.send("API is working fine.........");
